@@ -35,7 +35,6 @@ namespace logpp {
     typedef string funcName;
     typedef string logFormat;
     typedef string loggerName;
-    typedef string logMessage;
 
 	class ILogger {
    	    public: // +++ STATIC +++
