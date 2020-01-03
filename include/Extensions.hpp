@@ -62,7 +62,7 @@ namespace logpp {
      * @return string The converted string.
      */
     inline string stringToLower(string& mixedCase) {
-        transform(mixedCase.begin(), mixedCase.end(), mixedCase.begin() [&](uint8_t _char) { return tolower(_char); });
+        transform(mixedCase.begin(), mixedCase.end(), mixedCase.begin(), [&](uint8_t _char) { return tolower(_char); });
 
         return mixedCase;
     }
@@ -74,7 +74,7 @@ namespace logpp {
      * @return string The converted string.
      */
     inline string stringToUpper(string& mixedCase) {
-        transform(mixedCase.begin(), mixedCase.end(), mixedCase.begin() [&](uint8_t _char) { return toupper(_char); });
+        transform(mixedCase.begin(), mixedCase.end(), mixedCase.begin(), [&](uint8_t _char) { return toupper(_char); });
 
         return mixedCase;
     }
