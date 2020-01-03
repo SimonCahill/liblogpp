@@ -28,13 +28,6 @@ namespace logpp {
     //////////////////////////
     //      TYPEDEFS        //
     //////////////////////////
-    typedef int32_t lineNo;
-    typedef string applicationName;
-    typedef string className;
-    typedef string customFlare;
-    typedef string funcName;
-    typedef string logFormat;
-    typedef string loggerName;
 
 	class ILogger {
    	    public: // +++ STATIC +++
@@ -67,27 +60,27 @@ namespace logpp {
             /**
              * @brief Gets the name of the application that was set in this logger instance.
              */
-            applicationName getCurrentApplicationName() { return this->_appName; }
+            string getCurrentApplicationName() { return this->_appName; }
 
             /**
              * @brief Gets the name of the class using this logger. Only handy if multiple loggers are used.
              */
-            className getCurrentClassName() { return this->_className; }
+            string getCurrentClassName() { return this->_className; }
 
             /**
              * @brief Gets the custom flare set to use when logging.
              */
-            customFlare getCurrentCustomFlare() { return this->_customFlare; }
+            string getCurrentCustomFlare() { return this->_customFlare; }
 
             /**
              * @brief Gets the string used to format log outputs.
              */
-            logFormat getCurrentLoggerFormat() { return this->_loggerFormat; }
+            string getCurrentLoggerFormat() { return this->_loggerFormat; }
 
             /**
              * @brief Gets the name of this logger.
              */
-            loggerName getCurrentLoggerName() { return this->_logName; }
+            string getCurrentLoggerName() { return this->_logName; }
 
             /**
              * @brief VIRTUAL - Logs a message.
@@ -97,38 +90,38 @@ namespace logpp {
             //////////////////////////////
             //      Log Shortcuts       //
             //////////////////////////////
-            virtual void debug(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") = 0;
-            virtual void error(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") = 0;
-            virtual void fatal(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") = 0;
-            virtual void info(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") = 0;
-            virtual void ok(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") = 0;
-            virtual void trace(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") = 0;
-            virtual void warning(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") = 0;
+            virtual void debug(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0;
+            virtual void error(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0;
+            virtual void fatal(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0;
+            virtual void info(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0;
+            virtual void ok(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0;
+            virtual void trace(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0;
+            virtual void warning(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0;
 
             /**
              * @brief Sets the application name for this logger instance.
              */
-            void setCurrentApplicationName(applicationName appName) { this->_appName = appName; }
+            void setCurrentApplicationName(string appName) { this->_appName = appName; }
 
             /**
              * @brief Sets the name of the class using this instance.
              */
-            void setCurrentClassName(className _className) { this->_className = _className; }
+            void setCurrentClassName(string _className) { this->_className = _className; }
 
             /**
              * @brief Sets the custom flare to use with this instance.
              */
-            void setCurrentCustomFlare(customFlare _customFlare) { this->_customFlare = _customFlare; }
+            void setCurrentCustomFlare(string _customFlare) { this->_customFlare = _customFlare; }
 
             /**
              * @brief Sets the custom logger format. Default is default
              */
-            void setCurrentLoggerFormat(logFormat loggerFormat = "[ ${datetime} ] [ ${llevel} ] ${lmsg}") { this->_loggerFormat = loggerFormat; }
+            void setCurrentLoggerFormat(string loggerFormat = "[ ${datetime} ] [ ${llevel} ] ${lmsg}") { this->_loggerFormat = loggerFormat; }
 
             /**
              * @brief Sets the custom name for this logger. If default, generates random ID.
              */
-            void setCurrentLoggerName(loggerName logName = "") { this->_logName = logName; }
+            void setCurrentLoggerName(string logName = "") { this->_logName = logName; }
 
             /**
              * @brief Sets the current maximum log level.
@@ -138,20 +131,20 @@ namespace logpp {
 	    protected:
 	        ILogger(string logName, LogLevel maxLevel);
 
-            virtual void formatLogMessage(string& msg, LogLevel lvl, string func = "", uint32_t line = 0, exception* except = nullptr);
+            virtual string formatLogMessage(string& msg, LogLevel lvl, string func = "", int32_t line = -1, exception* except = nullptr);
 
 	    private:
-            applicationName     _appName;
-            className           _className;
-            customFlare         _customFlare;
-            logFormat           _loggerFormat;
-			loggerName          _logName;
+            string   _appName;
+            string   _className;
+            string   _customFlare;
+            string   _loggerFormat;
+			string   _logName;
 
-			LogLevel            _maxLoggingLevel;
+			LogLevel _maxLoggingLevel;
 
-            string              _dateFormatString;
-            string              _dateTimeFormatString;
-            string              _timeFormatString;
+            string   _dateFormatString;
+            string   _dateTimeFormatString;
+            string   _timeFormatString;
     };
 
 }
