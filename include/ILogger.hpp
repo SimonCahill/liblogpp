@@ -82,7 +82,7 @@ namespace logpp {
             /**
              * @brief Gets the string used to format log outputs.
              */
-            logFormat getCurrentLoggerFormat() { return this->_logFormat; }
+            logFormat getCurrentLoggerFormat() { return this->_loggerFormat; }
 
             /**
              * @brief Gets the name of this logger.
