@@ -13,7 +13,7 @@ namespace logpp {
 
     class ConsoleLogger: public ILogger {
         public:
-            ConsoleLogger(string logName, Loglevel maxLogLevel, bool outputBadLogsToStderr, uint32_t bufferSize, bool flushBufferAfterWrite);
+            ConsoleLogger(string logName, LogLevel maxLogLevel, bool outputBadLogsToStderr, uint32_t bufferSize, bool flushBufferAfterWrite);
             
             bool flushBufferAfterWrite() { return this->_flushBufferAfterWrite; }
             bool outputBadLogsToStderr() { return this->_outputBadLogsToStderr; }
@@ -23,17 +23,17 @@ namespace logpp {
 
             virtual void logMessage(LogLevel level, string msg);
 
-            virtual void debug(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
-            virtual void error(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
-            virtual void fatal(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
-            virtual void info(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
-            virtual void ok(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
-            virtual void trace(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
-            virtual void warning(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
+            virtual void debug(string msg, exception* except = nullptr, int32_t line = -1, string func = "");
+            virtual void error(string msg, exception* except = nullptr, int32_t line = -1, string func = "");
+            virtual void fatal(string msg, exception* except = nullptr, int32_t line = -1, string func = "");
+            virtual void info(string msg, exception* except = nullptr, int32_t line = -1, string func = "");
+            virtual void ok(string msg, exception* except = nullptr, int32_t line = -1, string func = "");
+            virtual void trace(string msg, exception* except = nullptr, int32_t line = -1, string func = "");
+            virtual void warning(string msg, exception* except = nullptr, int32_t line = -1, string func = "");
 
             void setBufferSize(bool bufSize) { this->_bufferSize = bufSize; }
             void setFlushAfterWrite(bool flushAfterWrite) { this->_flushBufferAfterWrite = flushAfterWrite; }
-            void setOutputBadLogsToStderr(bool ouputToStderr) { this->_outputBadLogsToStderr = outputToStderr; }
+            void setOutputBadLogsToStderr(bool outputToStderr) { this->_outputBadLogsToStderr = outputToStderr; }
             void setOutputDebugLogsToStderr(bool outputToStderr) { this->_outputDebugToStderr = outputToStderr; }
 
         private:
