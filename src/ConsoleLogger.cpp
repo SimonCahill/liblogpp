@@ -19,17 +19,8 @@
         setFlushBufferAfterWrite(flushBufferAfterWrite);
     }
 
-    void ConsoleLogger::logMessage(LogLevel level, string msg, exception* except = nullptr, lineNo line = -1, funcName function = "") {
-        switch (level) {
-            case LogLevel::Debug: debug(msg, except, line, function); break;
-            case LogLevel::Error: error(msg, except, line, function); break;
-            case LogLevel::Fatal: fatal(msg, except, line, function); break;
-            case LogLevel::Info: info(msg, except, line, function); break;
-            case LogLevel::Ok: ok(msg, except, line, function); break;
-            case LogLevel::Trace: trace(msg, except, line, function); break;
-            case LogLevel::Warning: warning(msg, except, line, function); break;
-            default: throw invalid_argument("Encountered unknown log level.");
-        }
+    void ConsoleLogger::logMessage(LogLevel level, string msg) {
+        
     }
 
     void ConsoleLogger::debug(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") {

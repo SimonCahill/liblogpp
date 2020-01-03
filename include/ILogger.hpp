@@ -92,7 +92,7 @@ namespace logpp {
             /**
              * @brief VIRTUAL - Logs a message.
              */
-            virtual void logMessage(LogLevel level, string msg, lineNo line = -1, funcName function = "") = 0;
+            virtual void logMessage(LogLevel level, string msg) = 0;
 
             //////////////////////////////
             //      Log Shortcuts       //
@@ -137,14 +137,6 @@ namespace logpp {
 
 	    protected:
 	        ILogger(string logName, LogLevel maxLevel);
-            // TODO: FIX
-            /*ILogger(string logName, LogLevel maxLevel, logFormat loggerFormat);
-            ILogger(string logName, LogLevel maxLevel, logFormat logFormat, applicationName _appName);
-            ILogger(string logName, LogLevel maxLevel, logFormat logFormat, applicationName _appName, className _className);
-            ILogger(string logName, LogLevel maxLevel, logFormat logFormat, applicationName _appName, className _className, customFlare _customFlare);
-            ILogger(string logName, LogLevel maxLevel, logFormat logFormat, applicationName _appName, customFlare _cvstomFlare);
-            ILogger(string logName, LogLevel maxLevel, logFormat logFormat, className _className);
-            ILogger(string logName, LogLevel maxLevel, logFormat logFormat, className _className, customFlare _customFlare;*/
 
             virtual void formatLogMessage(string& msg, LogLevel lvl, string func = "", uint32_t line = 0, exception* except = nullptr);
 

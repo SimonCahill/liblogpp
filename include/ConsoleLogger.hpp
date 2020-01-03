@@ -21,7 +21,7 @@ namespace logpp {
 
             uint32_t getBufferSize() { return this->_bufferSize; }
 
-            virtual void logMessage(LogLevel level, string msg, lineNo line = -1, funcName function = "");
+            virtual void logMessage(LogLevel level, string msg);
 
             virtual void debug(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
             virtual void error(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
