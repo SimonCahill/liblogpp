@@ -93,18 +93,18 @@ namespace logpp {
             /**
              * @brief VIRTUAL - Logs a message.
              */
-            virtual void logMessage(LogLevel level, logMessage msg, lineNo line = -1, funcName function = "") = 0;
+            virtual void logMessage(LogLevel level, string msg, lineNo line = -1, funcName function = "") = 0;
 
             //////////////////////////////
             //      Log Shortcuts       //
             //////////////////////////////
-            virtual void debug(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "") = 0;
-            virtual void error(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "") = 0;
-            virtual void fatal(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "") = 0;
-            virtual void info(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "") = 0;
-            virtual void ok(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "") = 0;
-            virtual void trace(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "") = 0;
-            virtual void warning(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "") = 0;
+            virtual void debug(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") = 0;
+            virtual void error(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") = 0;
+            virtual void fatal(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") = 0;
+            virtual void info(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") = 0;
+            virtual void ok(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") = 0;
+            virtual void trace(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") = 0;
+            virtual void warning(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") = 0;
 
             /**
              * @brief Sets the application name for this logger instance.
@@ -147,7 +147,7 @@ namespace logpp {
             ILogger(string logName, LogLevel maxLevel, logFormat logFormat, className _className);
             ILogger(string logName, LogLevel maxLevel, logFormat logFormat, className _className, customFlare _customFlare;*/
 
-            virtual void formatLogMessage(logMessage& msg);
+            virtual void formatLogMessage(string& msg, LogLevel lvl, string func = "", uint32_t line = 0, exception* except = nullptr);
 
 	    private:
             applicationName     _appName;
@@ -156,7 +156,12 @@ namespace logpp {
             logFormat           _loggerFormat;
 			loggerName          _logName;
 
-			LogLevel            _maxLoggingLevel;	};
+			LogLevel            _maxLoggingLevel;
+
+            string              _dateFormatString;
+            string              _dateTimeFormatString;
+            string              _timeFormatString;
+    };
 
 }
 

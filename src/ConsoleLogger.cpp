@@ -19,7 +19,7 @@
         setFlushBufferAfterWrite(flushBufferAfterWrite);
     }
 
-    void ConsoleLogger::logMessage(LogLevel level, logMessage msg, exception* except = nullptr, lineNo line = -1, funcName function = "") {
+    void ConsoleLogger::logMessage(LogLevel level, string msg, exception* except = nullptr, lineNo line = -1, funcName function = "") {
         switch (level) {
             case LogLevel::Debug: debug(msg, except, line, function); break;
             case LogLevel::Error: error(msg, except, line, function); break;
@@ -32,31 +32,31 @@
         }
     }
 
-    void ConsoleLogger::debug(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "") {
+    void ConsoleLogger::debug(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") {
         
     }
 
-    void ConsoleLogger::error(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "") {
+    void ConsoleLogger::error(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") {
 
     }
 
-    void ConsoleLogger::fatal(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "") {
+    void ConsoleLogger::fatal(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") {
 
     }
 
-    void ConsoleLogger::info(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "") {
+    void ConsoleLogger::info(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") {
 
     }
 
-    void ConsoleLogger::ok(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "") {
+    void ConsoleLogger::ok(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") {
 
     }
 
-    void ConsoleLogger::trace(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "") {
+    void ConsoleLogger::trace(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") {
 
     }
 
-    void ConsoleLogger::warning(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "") {
+    void ConsoleLogger::warning(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") {
 
     }
 

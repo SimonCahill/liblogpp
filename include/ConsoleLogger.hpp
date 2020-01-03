@@ -17,26 +17,29 @@ namespace logpp {
             
             bool flushBufferAfterWrite() { return this->_flushBufferAfterWrite; }
             bool outputBadLogsToStderr() { return this->_outputBadLogsToStderr; }
+            bool outputDebugLogsToStderr() { return this->_outputDebugToStderr; }
 
             uint32_t getBufferSize() { return this->_bufferSize; }
 
-            virtual void logMessage(LogLevel level, logMessage msg, lineNo line = -1, funcName function = "");
+            virtual void logMessage(LogLevel level, string msg, lineNo line = -1, funcName function = "");
 
-            virtual void debug(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
-            virtual void error(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
-            virtual void fatal(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
-            virtual void info(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
-            virtual void ok(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
-            virtual void trace(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
-            virtual void warning(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
+            virtual void debug(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
+            virtual void error(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
+            virtual void fatal(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
+            virtual void info(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
+            virtual void ok(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
+            virtual void trace(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
+            virtual void warning(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
 
-            void setFlushAfterWrite(bool flushAfterWrite) { this->flushBufferAfterWrite = flushAfterWrite; }
-            void setOutputBadLogsToStderr(bool ouputToStderr) { this->outputBadLogsToStderr = outputToStderr; }
             void setBufferSize(bool bufSize) { this->_bufferSize = bufSize; }
+            void setFlushAfterWrite(bool flushAfterWrite) { this->_flushBufferAfterWrite = flushAfterWrite; }
+            void setOutputBadLogsToStderr(bool ouputToStderr) { this->_outputBadLogsToStderr = outputToStderr; }
+            void setOutputDebugLogsToStderr(bool outputToStderr) { this->_outputDebugToStderr = outputToStderr; }
 
         private:
             bool _flushBufferAfterWrite;
             bool _outputBadLogsToStderr;
+            bool _outputDebugToStderr;
 
             uint32_t _bufferSize;
     };

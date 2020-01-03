@@ -21,6 +21,8 @@
  */
 namespace logpp {
 
+    using std::to_string;
+
     //===========================
     //		ILogger
     //	    Implementation
@@ -60,6 +62,9 @@ namespace logpp {
     ILogger::ILogger(loggerName logName, LogLevel maxLevel) {
         this->_logName = logName;
         this->_maxLogLevel = maxLevel;
+        this->_dateFormatString = "%Y.%m.%d";
+        this->_timeFormatString = "%H:%M";
+        this->_dateTimeFormatString = formatString("%s %s", _dateFormatString, _timeFormatString);
     }
 
     /**
@@ -70,14 +75,24 @@ namespace logpp {
      *
      * @param msg A reference to the message to be logged. This string will be modified!
      */
-    void ILogger::formatLogMessage(logMessage& msg) {
+    void ILogger::formatLogMessage(string& msg, LogLevel lvl, string func, uint32_t line, exception* except) {
         // logFormat local class variable containing formatting
-        if (logFormat.empty() || msg.empty()) return;
+        if (_loggerFormat.empty() || msg.empty()) return;
 
         string formattedMsg;
 
         stringReplaceAll(msg, LOG_FMT_DATE, getCurrentDate());
         stringReplaceAll(msg, LOG_FMT_TIME, getCurrentTime());
+        stringReplaceAll(msg, LOG_FMT_DATETIME, getCurrentDateTime());
+        stringReplaceAll(msg, LOG_FMT_LOGLVL, toString(lvl));
+        stringReplaceAll(msg, LOG_FMT_MSG, msg);
+        stringReplaceAll(msg, LOG_FMT_CLASS, _className);
+        stringReplaceAll(msg, LOG_FMT_APPNAME, _appName);
+        stringReplaceAll(msg, LOG_FMT_CUSTOM, _customFlare);
+
+        stringReplaceAll(msg, LOG_FMT_FUNC, func.empty() ? "{{ no function name available }}" : func);
+        stringReplaceAll(msg, LOG_FMT_LINE, line == 0 ? "{{ no line no available }}" : to_string(line));
+        stringReplaceAll(msg, LOG_FMT_EXCEPT, except == nullptr ? "{{ no exception data available }}" : except->what());
     }
 
 }
