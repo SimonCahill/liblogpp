@@ -59,7 +59,7 @@ namespace logpp {
      * @param logName The name for this logger.
      * @param maxLevel The maximum log level allowed for this instance.
      */
-    ILogger::ILogger(loggerName logName, LogLevel maxLevel) {
+    ILogger::ILogger(string logName, LogLevel maxLevel) {
         this->_logName = logName;
         this->_maxLogLevel = maxLevel;
         this->_dateFormatString = "%Y.%m.%d";
@@ -75,7 +75,7 @@ namespace logpp {
      *
      * @param msg A reference to the message to be logged. This string will be modified!
      */
-    void ILogger::formatLogMessage(string& msg, LogLevel lvl, string func, uint32_t line, exception* except) {
+    string ILogger::formatLogMessage(string& msg, LogLevel lvl, string func, int32_t line, exception* except) {
         // logFormat local class variable containing formatting
         if (_loggerFormat.empty() || msg.empty()) return;
 
@@ -91,7 +91,7 @@ namespace logpp {
         stringReplaceAll(msg, LOG_FMT_CUSTOM, _customFlare);
 
         stringReplaceAll(msg, LOG_FMT_FUNC, func.empty() ? "{{ no function name available }}" : func);
-        stringReplaceAll(msg, LOG_FMT_LINE, line == 0 ? "{{ no line no available }}" : to_string(line));
+        stringReplaceAll(msg, LOG_FMT_LINE, line == -1 ? "{{ no line no available }}" : to_string(line));
         stringReplaceAll(msg, LOG_FMT_EXCEPT, except == nullptr ? "{{ no exception data available }}" : except->what());
     }
 
