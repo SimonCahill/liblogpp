@@ -4,52 +4,77 @@
  * log++ - Intuitive logging library for C++ written by Simon Cahill.
  */
 
+/****************************
+ *	    Local Includes	    *
+ ****************************/
  #include "ConsoleLogger.hpp"
 
- namespace logpp {
+/***************************
+ *	    System Includes    *
+ ***************************/
+#include <iostream>
+#include <ostream>
 
-     using std::cerr;
-     using std::cout;
-     using std::endl;
+namespace logpp {
 
-    ConsoleLogger::ConsoleLogger(string logName, Loglevel maxLogLevel, bool outputBadLogsToStderr, uint32_t bufferSize, bool flushBufferAfterWrite):
-    ILogger(logName, maxLogLevel) {
-        setOutputBadLogsToStderr(outputBadLogsToStderr);
-        setBufferSize(bufferSize);
-        setFlushBufferAfterWrite(flushBufferAfterWrite);
-    }
+    using std::cerr;
+    using std::cout;
+    using std::endl;
+    using std::ostream;
 
-    void ConsoleLogger::logMessage(LogLevel level, string msg) {
-        
-    }
+   ConsoleLogger::ConsoleLogger(string logName, LogLevel maxLogLevel, bool outputBadLogsToStderr, uint32_t bufferSize, bool flushBufferAfterWrite):
+   ILogger(logName, maxLogLevel) {
+       setOutputBadLogsToStderr(outputBadLogsToStderr);
+       setBufferSize(bufferSize);
+       setFlushAfterWrite(flushBufferAfterWrite);
+   }
 
-    void ConsoleLogger::debug(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") {
-        
-    }
+   void ConsoleLogger::logMessage(LogLevel level, string msg) {
+       auto outputStream = cout;
 
-    void ConsoleLogger::error(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") {
+       if (level == LogLevel::Debug && outputDebugLogsToStderr()) {
+           outputStream = cerr;
+       } else if ((level == LogLevel::Warning || level == LogLevel::Error || 
+                   level == LogLevel::Fatal || level == LogLevel::Trace) && outputBadLogsToStderr()) {
+           outputStream = cerr;
+       }
 
-    }
+       outputStream << msg << endl;
+   }
 
-    void ConsoleLogger::fatal(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") {
+   void ConsoleLogger::debug(string msg, exception* except, int32_t line, string func) {
+       auto level = LogLevel::Debug;
+       logMessage(level, formatLogMessage(msg, level, func, line, except));
+   }
 
-    }
+   void ConsoleLogger::error(string msg, exception* except, int32_t line, string func) {
+       auto level = LogLevel::Error;
+       logMessage(level, formatLogMessage(msg, level, func, line, except));
+   }
 
-    void ConsoleLogger::info(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") {
+   void ConsoleLogger::fatal(string msg, exception* except, int32_t line, string func) {
+       auto level = LogLevel::Fatal;
+       logMessage(level, formatLogMessage(msg, level, func, line, except));
+   }
 
-    }
+   void ConsoleLogger::info(string msg, exception* except, int32_t line, string func) {
+       auto level = LogLevel::Info;
+       logMessage(level, formatLogMessage(msg, level, func, line, except));
+   }
 
-    void ConsoleLogger::ok(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") {
+   void ConsoleLogger::ok(string msg, exception* except, int32_t line, string func) {
+       auto level = LogLevel::Ok;
+       logMessage(level, formatLogMessage(msg, level, func, line, except));
+   }
 
-    }
+   void ConsoleLogger::trace(string msg, exception* except, int32_t line, string func) {
+       auto level = LogLevel::Trace;
+       logMessage(level, formatLogMessage(msg, level, func, line, except));
+   }
 
-    void ConsoleLogger::trace(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") {
+   void ConsoleLogger::warning(string msg, exception* except, int32_t line, string func) {
+       auto level = LogLevel::Warning;
+       logMessage(level, formatLogMessage(msg, level, func, line, except));
+   }
 
-    }
-
-    void ConsoleLogger::warning(string msg, exception* except = nullptr, lineNo line = -1, funcName func = "") {
-
-    }
-
-
- };
+}
