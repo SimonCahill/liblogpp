@@ -27,6 +27,9 @@ project(logpp LANGUAGES CXX VERSION 0.0.1)
 ###
 set(CMAKE_CXX_VERSION 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+# Enable GNU extensions
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_EXTENSIONS ON)
 
 ###
 # This is the part where you get to decide whether you
