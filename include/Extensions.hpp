@@ -13,6 +13,7 @@
 
  #include <algorithm>
  #include <cctype>
+ #include <memory>
  #include <string>
 
 namespace logpp {
@@ -21,6 +22,7 @@ namespace logpp {
     using std::tolower;
     using std::toupper;
     using std::transform;
+    using std::unique_ptr;
 
     /**
      * @brief Returns a value indicating whether a given string contains a certain value.
@@ -94,6 +96,16 @@ namespace logpp {
         while (stringContains(haystack, needle)) {
             stringReplace(haystack, needle, replacement);
         }
+    }
+
+    template<typename... Args>
+    string formatString(const string& format, Args... args)  {
+        size_t stringSize = snprintf(NULL, 0, format.c_str(), args...) + 1; // +1 for \0
+        unique_ptr<char[]> buffer(new char[stringSize]);
+
+        snprintf(buffer.get(), stringSize, format.c_str(), args...);
+
+        return string(buffer.get(), buffer.get() + stringSize - 1); // std::string handles termination for us.
     }
 
 }
