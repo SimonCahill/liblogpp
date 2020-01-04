@@ -8,11 +8,13 @@
  */
 
 //////////////////////////////////
-//	System Includes		//
+//	    System Includes		    //
 //////////////////////////////////
+#include <chrono>
+#include <ctime>
 
 //////////////////////////////////
-//	Local Includes		//
+//	    Local Includes		    //
 //////////////////////////////////
 #include "ILogger.hpp"
 
@@ -61,7 +63,7 @@ namespace logpp {
      */
     ILogger::ILogger(string logName, LogLevel maxLevel) {
         this->_logName = logName;
-        this->_maxLogLevel = maxLevel;
+        this->_maxLoggingLevel = maxLevel;
         this->_dateFormatString = "%Y.%m.%d";
         this->_timeFormatString = "%H:%M";
         this->_dateTimeFormatString = formatString("%s %s", _dateFormatString, _timeFormatString);
@@ -77,7 +79,7 @@ namespace logpp {
      */
     string ILogger::formatLogMessage(string& msg, LogLevel lvl, string func, int32_t line, exception* except) {
         // logFormat local class variable containing formatting
-        if (_loggerFormat.empty() || msg.empty()) return;
+        if (_loggerFormat.empty() || msg.empty()) return msg;
 
         string formattedMsg;
 
@@ -93,6 +95,52 @@ namespace logpp {
         stringReplaceAll(msg, LOG_FMT_FUNC, func.empty() ? "{{ no function name available }}" : func);
         stringReplaceAll(msg, LOG_FMT_LINE, line == -1 ? "{{ no line no available }}" : to_string(line));
         stringReplaceAll(msg, LOG_FMT_EXCEPT, except == nullptr ? "{{ no exception data available }}" : except->what());
+
+        return msg;
+    }
+
+    // PUBLIC IMPLEMENTATION
+
+    /**
+     * @brief Gets the current date as per format rules.
+     *
+     * @return The current date as defined by _dateFormatString
+     */
+    string ILogger::getCurrentDate() {
+        auto timeStruct = getCurrentLocalTime();
+        string charBuffer;
+
+        strftime(&charBuffer[0], 128, _dateFormatString.c_str(), &timeStruct);
+
+        return charBuffer;
+    }
+
+    /**
+     * @brief Gets the current date as per format rules.
+     *
+     * @return The current date as defined by _dateTimeFormatString
+     */
+    string ILogger::getCurrentDateTime() {
+        auto timeStruct = getCurrentLocalTime();
+        string charBuffer;
+
+        strftime(&charBuffer[0], 128, _dateTimeFormatString.c_str(), &timeStruct);
+
+        return charBuffer;
+    }
+
+    /**
+     * @brief Gets the current date as per format rules.
+     *
+     * @return The current date as defined by _timeFormatString
+     */
+    string ILogger::getCurrentTime() {
+        auto timeStruct = getCurrentLocalTime();
+        string charBuffer;
+
+        strftime(&charBuffer[0], 128, _timeFormatString.c_str(), &timeStruct);
+
+        return charBuffer;
     }
 
 }
