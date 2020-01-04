@@ -108,6 +108,13 @@ namespace logpp {
         return string(buffer.get(), buffer.get() + stringSize - 1); // std::string handles termination for us.
     }
 
+    inline struct tm getCurrentLocalTime() {
+        auto timeNow = time(NULL);
+        auto timeStruct = *localtime(&timeNow);
+
+        return timeStruct;
+    }
+
 }
 
 #endif // LIBLOGPP_EXTENSIONS_HPP
