@@ -83,6 +83,27 @@ namespace logpp {
             string getCurrentLoggerName() { return this->_logName; }
 
             /**
+             * @brief Gets the current date as per format rules.
+             *
+             * @return The current date as defined by _dateFormatString
+             */
+            virtual string getCurrentDate();
+
+            /**
+             * @brief Gets the current date as per format rules.
+             *
+             * @return The current date as defined by _dateTimeFormatString
+             */
+            virtual string getCurrentDateTime();
+
+            /**
+             * @brief Gets the current date as per format rules.
+             *
+             * @return The current date as defined by _timeFormatString
+             */
+            virtual string getCurrentTime();
+
+            /**
              * @brief VIRTUAL - Logs a message.
              */
             virtual void logMessage(LogLevel level, string msg) = 0;
