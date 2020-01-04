@@ -20,6 +20,7 @@ namespace logpp {
     using std::cerr;
     using std::cout;
     using std::endl;
+    using std::iostream;
     using std::ostream;
 
    ConsoleLogger::ConsoleLogger(string logName, LogLevel maxLogLevel, bool outputBadLogsToStderr, uint32_t bufferSize, bool flushBufferAfterWrite):
@@ -30,16 +31,14 @@ namespace logpp {
    }
 
    void ConsoleLogger::logMessage(LogLevel level, string msg) {
-       auto outputStream = cout;
-
        if (level == LogLevel::Debug && outputDebugLogsToStderr()) {
-           outputStream = cerr;
+           cerr << msg << endl;
        } else if ((level == LogLevel::Warning || level == LogLevel::Error || 
                    level == LogLevel::Fatal || level == LogLevel::Trace) && outputBadLogsToStderr()) {
-           outputStream = cerr;
+           cerr << msg << endl;
        }
 
-       outputStream << msg << endl;
+       cout << msg << endl;
    }
 
    void ConsoleLogger::debug(string msg, exception* except, int32_t line, string func) {
