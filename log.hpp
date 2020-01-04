@@ -7,28 +7,33 @@
  #ifndef LIB_LOGPP_HPP
  #define LIB_LOGPP_HPP
 
-#include <extensions>
 #include <iostream>
 
+#include <Extensions.hpp>
 #include <ILogger.hpp>
+#include <ConsoleLogger.hpp>
 
  namespace logpp {
 
+     using std::invalid_argument;
      using std::ostream;
 
      class LogFactory {
 
          public: // +++ STATIC +++
-            buildFileLogger(LogLevel maxLogLevel, string filename, uint32_t bufferSize, bool flushBufferAfterWrite) {
+            ILogger* buildFileLogger(LogLevel maxLogLevel, string filename, uint32_t bufferSize, bool flushBufferAfterWrite) {
                 throw invalid_argument("Method is not implemented.");
+                return nullptr;
             }
 
-            buildConsoleLogger(LogLevel maxLogLevel, bool outputBadLogsToStderr, uint32_t bufferSize, bool flushBufferAfterWrite) {
+            ILogger* buildConsoleLogger(LogLevel maxLogLevel, bool outputBadLogsToStderr, uint32_t bufferSize, bool flushBufferAfterWrite) {
                 throw invalid_argument("Method is not implemented.");
+                return nullptr;
             }
 
-            buildStreamLogger(LogLevel maxLogLevel, ostream outStream, uint32_t bufferSize, bool flushBufferAfterWrite) {
+            ILogger* buildStreamLogger(LogLevel maxLogLevel, ostream outStream, uint32_t bufferSize, bool flushBufferAfterWrite) {
                 throw invalid_argument("Method is not implemented.");
+                return nullptr;
             }
      };
 
