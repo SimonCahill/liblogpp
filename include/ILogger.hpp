@@ -18,16 +18,14 @@
  ***************************/
 
 #include <exception>
+#include <sstream>
 #include <string>
 
 namespace logpp {
 
     using std::exception;
 	using std::string;
-
-    //////////////////////////
-    //      TYPEDEFS        //
-    //////////////////////////
+    using std::stringstream;
 
 	class ILogger {
    	    public: // +++ STATIC +++
@@ -55,7 +53,10 @@ namespace logpp {
 	    public:
             virtual ~ILogger() { /* No cleanup required here for now */ } ///!< Virtual destructor
 
-            LogLevel getCurrentMaxLogLevel(); ///!< Gets the current max log level for this instance.
+            /**
+             * @brief Gets the current max log level for this instance.
+             */
+            LogLevel getCurrentMaxLogLevel() { return this->_maxLoggingLevel; }
 
             /**
              * @brief Gets the name of the application that was set in this logger instance.
@@ -97,6 +98,22 @@ namespace logpp {
             virtual string getCurrentDateTime();
 
             /**
+             * @brief Gets the size of the string (in bytes) of the underlying buffer.
+             *
+             * @return The size (in bytes) of the underlying buffer.
+             */
+            uint32_t getBufferSize() { return this->_logBuffer.str().size(); }
+
+            /**
+             * @brief Gets the maximum size for the logger buffer.
+             *
+             * @remarks A size of zero implies the buffer will be flushed after each write and will override @link flushBufferAfterEachWrite() @endlink
+             *
+             * @return The maximum configured buffer size.
+             */
+            uint32_t getMaxBufferSize() { return this->_maxBufferSize; }
+
+            /**
              * @brief Gets the current date as per format rules.
              *
              * @return The current date as defined by _timeFormatString
@@ -104,20 +121,25 @@ namespace logpp {
             virtual string getCurrentTime();
 
             /**
+             * @brief Flushes the internal buffer; abstract.
+             */
+            virtual void flushBuffer() = 0;
+
+            /**
              * @brief VIRTUAL - Logs a message.
              */
-            virtual void logMessage(LogLevel level, string msg) = 0;
+            virtual void logMessage(LogLevel level, string msg);
 
             //////////////////////////////
             //      Log Shortcuts       //
             //////////////////////////////
-            virtual void debug(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0;
-            virtual void error(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0;
-            virtual void fatal(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0;
-            virtual void info(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0;
-            virtual void ok(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0;
-            virtual void trace(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0;
-            virtual void warning(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0;
+            virtual void debug(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0; ///!< A shortcut method for logging debug messages. Abstract.
+            virtual void error(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0; ///!< A shortcut method for logging error messages. Abstract.
+            virtual void fatal(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0; ///!< A shortcut method for logging fatal messages. Abstract.
+            virtual void info(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0; ///!< A shortcut method for logging info messages. Abstract.
+            virtual void ok(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0; ///!< A shortcut method for logging ok messages. Abstract.
+            virtual void trace(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0; ///!< A shortcut method for logging trace messages. Abstract.
+            virtual void warning(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0; ///!< A shortcut method for logging warning messages. Abstract.
 
             /**
              * @brief Sets the application name for this logger instance.
@@ -149,23 +171,64 @@ namespace logpp {
              */
             void setCurrentMaxLogLevel(LogLevel level = LogLevel::Error) { this->_maxLoggingLevel = level; }
 
-	    protected:
-	        ILogger(string logName, LogLevel maxLevel);
+            /**
+             * @brief Sets a value indicating whether to flush the underlying buffer after each write.
+             *
+             * @remarks This may be overruled by setting the maximum buffer size to zero!
+             *
+             * @param flushAfterWrite A value indicating whether to flush the buffer after each write.
+             */
+            void setFlushAfterWrite(bool flushAfterWrite) { this->_flushBufferAfterWrite = flushAfterWrite; }
 
+            /**
+             * @brief Sets the maximum size (in bytes) of the underlying buffer.
+             *
+             * @remarks Setting this to 0 implies @link flushBufferAfterWrite @endlink.
+             *
+             * @param maxSize The maximum buffer size in bytes.
+             */
+            void setMaxBufferSize(uint32_t maxSize) { this->_maxBufferSize = maxSize; }
+
+	    protected:
+	        ILogger(string logName, LogLevel maxLevel, uint32_t bufferSize, bool flushBufferAfterWrite);
+
+            /**
+             * @brief Formats an entire log message which may then be directly printed to any given (string) output.
+             *
+             * @param msg A reference to a string containing the log message. Also used as the output for the entire (formatted) message.
+             * @param lvl The log level for the given message. Used for formatting.
+             * @param func The function which called the logger. Used for formatting.
+             * @param line The line at which the logger was called. Used for formatting.
+             * @param except A pointer to an exception which should be logged.
+             *
+             * @return Returns the entire formatted message so it may be used in a function call.
+             */
             virtual string formatLogMessage(string& msg, LogLevel lvl, string func = "", int32_t line = -1, exception* except = nullptr);
 
+            /**
+             * @brief Gets a reference to the string stream used as a buffer.
+             *
+             * @return A reference to the back-end string stream used as a buffer.
+             */
+            stringstream& getLogBuffer() { return this->_logBuffer; }
+
 	    private:
-            string   _appName;
-            string   _className;
-            string   _customFlare;
-            string   _loggerFormat;
-			string   _logName;
+            string          _appName;
+            string          _className;
+            string          _customFlare;
+            string          _loggerFormat;
+			string          _logName;
 
-			LogLevel _maxLoggingLevel;
+			LogLevel        _maxLoggingLevel;
 
-            string   _dateFormatString;
-            string   _dateTimeFormatString;
-            string   _timeFormatString;
+            string          _dateFormatString;
+            string          _dateTimeFormatString;
+            string          _timeFormatString;
+
+            // Logger buffer
+            bool            _flushBufferAfterWrite;
+            stringstream    _logBuffer;
+            uint32_t        _maxBufferSize;
     };
 
 }
