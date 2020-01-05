@@ -53,7 +53,19 @@ If you only wish to build the project with CMake, then executing the following c
 
 ```bash
     $ mkdir build; cd build;
-    $ cmake [-DBUILD_STATIC=OFF] .. && make all -j4 # Turning off BUILD_STATIC will build the dynamic library
+    $ cmake [-DBUILD_STATIC=OFF] .. && make all [-j<thread_count>] # Turning off BUILD_STATIC will build the dynamic library
+```
+
+### Cross compiling w/ CMake
+
+If you require log++ on a platform which requires cross-compilation, I have provided some toolchain files for CMake, which make this process easier.
+You are more than welcome to provide custom toolchain files as you see fit.
+
+Building log++ with a toolchain file is very similar to simply building with CMake.
+Follow the steps above, but add the following argument when calling CMake.
+
+```bash
+    $ cmake [-DBUILD_STATIC=OFF] <-DCMAKE_TOOLCHAIN_FILE=./toolchains/<toolchain>.cmake> .. && make all [-j<thread_count>]
 ```
 
 ## Using log++ in your project
