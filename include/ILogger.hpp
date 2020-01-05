@@ -51,7 +51,9 @@ namespace logpp {
             static string LOG_FMT_CUSTOM; // ${custom} => this allows for some custom flare to be added to log outputs
 
 	    public:
-            virtual ~ILogger() { /* No cleanup required here for now */ } ///!< Virtual destructor
+            virtual ~ILogger(); ///!< Virtual destructor
+
+            bool flushBufferAfterWrite() { return this->_flushBufferAfterWrite; }
 
             /**
              * @brief Gets the current max log level for this instance.
@@ -133,13 +135,13 @@ namespace logpp {
             //////////////////////////////
             //      Log Shortcuts       //
             //////////////////////////////
-            virtual void debug(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0; ///!< A shortcut method for logging debug messages. Abstract.
-            virtual void error(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0; ///!< A shortcut method for logging error messages. Abstract.
-            virtual void fatal(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0; ///!< A shortcut method for logging fatal messages. Abstract.
-            virtual void info(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0; ///!< A shortcut method for logging info messages. Abstract.
-            virtual void ok(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0; ///!< A shortcut method for logging ok messages. Abstract.
-            virtual void trace(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0; ///!< A shortcut method for logging trace messages. Abstract.
-            virtual void warning(string msg, exception* except = nullptr, int32_t line = -1, string func = "") = 0; ///!< A shortcut method for logging warning messages. Abstract.
+            virtual void debug(string msg, exception* except = nullptr, int32_t line = -1, string func = ""); ///!< A shortcut method for logging debug messages. Abstract.
+            virtual void error(string msg, exception* except = nullptr, int32_t line = -1, string func = ""); ///!< A shortcut method for logging error messages. Abstract.
+            virtual void fatal(string msg, exception* except = nullptr, int32_t line = -1, string func = ""); ///!< A shortcut method for logging fatal messages. Abstract.
+            virtual void info(string msg, exception* except = nullptr, int32_t line = -1, string func = ""); ///!< A shortcut method for logging info messages. Abstract.
+            virtual void ok(string msg, exception* except = nullptr, int32_t line = -1, string func = ""); ///!< A shortcut method for logging ok messages. Abstract.
+            virtual void trace(string msg, exception* except = nullptr, int32_t line = -1, string func = ""); ///!< A shortcut method for logging trace messages. Abstract.
+            virtual void warning(string msg, exception* except = nullptr, int32_t line = -1, string func = ""); ///!< A shortcut method for logging warning messages. Abstract.
 
             /**
              * @brief Sets the application name for this logger instance.
