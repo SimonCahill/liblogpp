@@ -6,3 +6,6 @@ build/
 
 # Ignore vsode settings
 .vscode/
+
+# Ignore /docs directory
+docs/
