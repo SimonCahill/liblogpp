@@ -75,6 +75,15 @@ namespace logpp {
     }
 
     /**
+     * @brief Destroy the ILogger::ILogger object.
+     * 
+     * @remarks Also flushes the buffer.
+     */
+    ILogger::~ILogger() {
+        ILogger::flushBuffer();
+    }
+
+    /**
      * @brief Virtual method for formatting log messages as desired.
      *
      * This method provides a simple way of creating a custom flare for your log messages.
@@ -161,9 +170,46 @@ namespace logpp {
         _logBuffer << msg << endl; // Add message to buffer
 
         // Now check if we need to flush
-        if (isBadLog(level) || (getMaxBufferSize() == 0 || getBufferSize() >= getMaxbufferSize()) || flushAfterWrite()) {
+        if (isBadLog(level) || (getMaxBufferSize() == 0 || getBufferSize() >= getMaxBufferSize()) || flushBufferAfterWrite()) {
             flushBuffer();
         }
+    }
+
+
+
+    void ILogger::debug(string msg, exception* except, int32_t line, string func) {
+        auto level = LogLevel::Debug;
+        logMessage(level, formatLogMessage(msg, level, func, line, except));
+    }
+
+    void ILogger::error(string msg, exception* except, int32_t line, string func) {
+        auto level = LogLevel::Error;
+        logMessage(level, formatLogMessage(msg, level, func, line, except));
+    }
+
+    void ILogger::fatal(string msg, exception* except, int32_t line, string func) {
+        auto level = LogLevel::Fatal;
+        logMessage(level, formatLogMessage(msg, level, func, line, except));
+    }
+
+    void ILogger::info(string msg, exception* except, int32_t line, string func) {
+        auto level = LogLevel::Info;
+        logMessage(level, formatLogMessage(msg, level, func, line, except));
+    }
+
+    void ILogger::ok(string msg, exception* except, int32_t line, string func) {
+        auto level = LogLevel::Ok;
+        logMessage(level, formatLogMessage(msg, level, func, line, except));
+    }
+
+    void ILogger::trace(string msg, exception* except, int32_t line, string func) {
+        auto level = LogLevel::Trace;
+        logMessage(level, formatLogMessage(msg, level, func, line, except));
+    }
+
+    void ILogger::warning(string msg, exception* except, int32_t line, string func) {
+        auto level = LogLevel::Warning;
+        logMessage(level, formatLogMessage(msg, level, func, line, except));
     }
 
 }
