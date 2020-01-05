@@ -12,6 +12,7 @@
 //////////////////////////////////
 #include <chrono>
 #include <ctime>
+#include <iostream>
 
 //////////////////////////////////
 //	    Local Includes		    //
@@ -61,12 +62,16 @@ namespace logpp {
      * @param logName The name for this logger.
      * @param maxLevel The maximum log level allowed for this instance.
      */
-    ILogger::ILogger(string logName, LogLevel maxLevel) {
+    ILogger::ILogger(string logName, LogLevel maxLevel, uint32_t bufferSize, bool flushBufferAfterWrite) {
         this->_logName = logName;
         this->_maxLoggingLevel = maxLevel;
         this->_dateFormatString = "%Y.%m.%d";
         this->_timeFormatString = "%H:%M";
         this->_dateTimeFormatString = formatString("%s %s", _dateFormatString, _timeFormatString);
+
+        // Buffer init
+        this->_flushBufferAfterWrite = flushBufferAfterWrite;
+        this->_maxBufferSize = bufferSize;
     }
 
     /**
@@ -141,6 +146,24 @@ namespace logpp {
         strftime(&charBuffer[0], 128, _timeFormatString.c_str(), &timeStruct);
 
         return charBuffer;
+    }
+
+    /**
+     * @brief Writes a message to the underlying log buffer and flushes the buffer accordingly.
+     *
+     * @remarks Bad log levels (log levels above four) will cause the buffer to always be flushed in this default implementation!
+     *
+     * @param level The level of the current log.
+     * @param msg The (formatted) message to output.
+     */
+    void ILogger::logMessage(LogLevel level, string msg) {
+        using std::endl;
+        _logBuffer << msg << endl; // Add message to buffer
+
+        // Now check if we need to flush
+        if (isBadLog(level) || (getMaxBufferSize() == 0 || getBufferSize() >= getMaxbufferSize()) || flushAfterWrite()) {
+            flushBuffer();
+        }
     }
 
 }
