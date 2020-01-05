@@ -3,3 +3,6 @@ build/
 
 # Ignore object files
 *.o
+
+# Ignore vsode settings
+.vscode/
