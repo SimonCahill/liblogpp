@@ -13,11 +13,13 @@
 
  #include <algorithm>
  #include <cctype>
+ #include <iostream>
  #include <memory>
  #include <string>
 
 namespace logpp {
 
+    using std::iostream;
     using std::string;
     using std::tolower;
     using std::toupper;
