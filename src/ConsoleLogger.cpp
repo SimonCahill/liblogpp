@@ -30,15 +30,12 @@ namespace logpp {
        setFlushAfterWrite(flushBufferAfterWrite);
    }
 
-   void ConsoleLogger::logMessage(LogLevel level, string msg) {
-       if (level == LogLevel::Debug && outputDebugLogsToStderr()) {
-           cerr << msg << endl;
-       } else if ((level == LogLevel::Warning || level == LogLevel::Error || 
-                   level == LogLevel::Fatal || level == LogLevel::Trace) && outputBadLogsToStderr()) {
-           cerr << msg << endl;
-       }
+   ConsoleLogger::~ConsoleLogger() {}
 
-       cout << msg << endl;
+   void ConsoleLogger::flushBuffer() {
+       // TODO: Implement functionality where bad logs are output to cerr if desired.
+       // This will require overriding logMessage()
+       cout << getLogBuffer().str() << endl;
    }
 
    void ConsoleLogger::debug(string msg, exception* except, int32_t line, string func) {
