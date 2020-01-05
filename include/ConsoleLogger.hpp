@@ -20,14 +20,7 @@ namespace logpp {
             bool outputDebugLogsToStderr() { return this->_outputDebugToStderr; }
 
             virtual void flushBuffer();
-
-            virtual void debug(string msg, exception* except = nullptr, int32_t line = -1, string func = "");
-            virtual void error(string msg, exception* except = nullptr, int32_t line = -1, string func = "");
-            virtual void fatal(string msg, exception* except = nullptr, int32_t line = -1, string func = "");
-            virtual void info(string msg, exception* except = nullptr, int32_t line = -1, string func = "");
-            virtual void ok(string msg, exception* except = nullptr, int32_t line = -1, string func = "");
-            virtual void trace(string msg, exception* except = nullptr, int32_t line = -1, string func = "");
-            virtual void warning(string msg, exception* except = nullptr, int32_t line = -1, string func = "");
+            virtual void logMessage(LogLevel level, string msg);
 
             void setOutputBadLogsToStderr(bool outputToStderr) { this->_outputBadLogsToStderr = outputToStderr; }
             void setOutputDebugLogsToStderr(bool outputToStderr) { this->_outputDebugToStderr = outputToStderr; }
