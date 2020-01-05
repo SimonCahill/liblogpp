@@ -77,18 +77,12 @@ namespace logpp {
     using std::atoi;
     using std::string;
 
-    string toString(const LogLevel level) {
-        switch (level) {
-            case LogLevel::Ok: return "Ok";
-            case LogLevel::Info: return "Info";
-            case LogLevel::Warning: return "Warning";
-            case LogLevel::Error: return "Error";
-            case LogLevel::Fatal: return "Fatal";
-            case LogLevel::Debug: return "Debug";
-            case LogLevel::Trace: return "Trace";
-            default: return "Unknown";
-        }
-    }
+    /**
+     * @brief Gets a value indicating whether a given log level is bad or not.
+     *
+     * @returns @code true @endcode if the log level is considered bad.
+     */
+    bool isBadLog(LogLevel level) { return ((uint32_t)level) >= 4; }
 
     /**
      * @brief Attempts to parse a string value to a LogLevel value.
@@ -124,6 +118,19 @@ namespace logpp {
          }
 
          return false;
+    }
+
+    string toString(const LogLevel level) {
+        switch (level) {
+            case LogLevel::Ok: return "Ok";
+            case LogLevel::Info: return "Info";
+            case LogLevel::Warning: return "Warning";
+            case LogLevel::Error: return "Error";
+            case LogLevel::Fatal: return "Fatal";
+            case LogLevel::Debug: return "Debug";
+            case LogLevel::Trace: return "Trace";
+            default: return "Unknown";
+        }
     }
 
 }
