@@ -1,20 +1,19 @@
 CROSS=
 CXX := ${CROSS}g++
 
-CFLAGS := -std=gnu++14 -I../ -I../include -Iinclude
+CFLAGS := -L../build -std=gnu++14 -I../ -I../include -Iinclude -llogpp
 
 .PHONY: all clean prepare test
 
-prepare:
-	@-mkdir build ||:
+build/test: src/TestMain.cpp
+	@-mkdir build 2>&1||:
 	@echo "Build was prepared!"
-
-build/test: ../build/liblogpp.a src/TestMain.cpp
+	@echo "Compiling..."
 	@${CXX} ${CFLAGS} $^ -o $@
 
 test: build/test
 
-all: prepare test
+all: test
 	@echo "Built test!"
 
 clean:
