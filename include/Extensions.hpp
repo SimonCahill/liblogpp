@@ -100,6 +100,15 @@ namespace logpp {
         }
     }
 
+    /**
+     * @brief Formats a std string object.
+     * 
+     * @tparam Args The formatting argument types.
+     * @param format The format string.
+     * @param args The format arguments (strings must be converted to C-style strings!)
+     * 
+     * @return string The formatted string. 
+     */
     template<typename... Args>
     string formatString(const string& format, Args... args)  {
         size_t stringSize = snprintf(NULL, 0, format.c_str(), args...) + 1; // +1 for \0
@@ -110,6 +119,11 @@ namespace logpp {
         return string(buffer.get(), buffer.get() + stringSize - 1); // std::string handles termination for us.
     }
 
+    /**
+     * @brief Get the Current Local Time object.
+     * 
+     * @return struct tm A struct containing the current local time.
+     */
     inline struct tm getCurrentLocalTime() {
         auto timeNow = time(NULL);
         auto timeStruct = *localtime(&timeNow);

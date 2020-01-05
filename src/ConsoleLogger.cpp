@@ -20,13 +20,28 @@ namespace logpp {
     using std::iostream;
     using std::ostream;
 
+    /**
+     * @brief Construct a new Console Logger:: Console Logger object
+     * 
+     * @param logName The name for this logger.
+     * @param maxLogLevel The maximum logging level to log.
+     * @param outputBadLogsToStderr Indicates whether to output bad logs to std error or not.
+     * @param bufferSize The maximum buffer size before flushing.
+     * @param flushBufferAfterWrite Indicates whether to flush the buffer after each write to it.
+     */
     ConsoleLogger::ConsoleLogger(string logName, LogLevel maxLogLevel, bool outputBadLogsToStderr, uint32_t bufferSize, bool flushBufferAfterWrite):
     ILogger(logName, maxLogLevel, flushBufferAfterWrite, bufferSize) {
         setOutputBadLogsToStderr(outputBadLogsToStderr);
     }
 
+    /**
+     * @brief Destroy the Console Logger:: Console Logger object
+     */
     ConsoleLogger::~ConsoleLogger() {}
 
+    /**
+     * @brief Flushes the underlying buffer to its respective output.
+     */
     void ConsoleLogger::flushBuffer() {
         using std::cout;
         using std::endl;

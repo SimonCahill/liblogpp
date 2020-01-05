@@ -20,7 +20,7 @@
 #include "ILogger.hpp"
 
 /**
- * The library's main namespace.
+ * @brief The library's main namespace.
  */
 namespace logpp {
 
@@ -61,6 +61,8 @@ namespace logpp {
      *
      * @param logName The name for this logger.
      * @param maxLevel The maximum log level allowed for this instance.
+     * @param bufferSize The maximum size of the underlying buffer.
+     * @param flushBufferAfterWrite A value indicating whether to flush the buffer after each write.
      */
     ILogger::ILogger(string logName, LogLevel maxLevel, uint32_t bufferSize, bool flushBufferAfterWrite) {
         this->_logName = logName;
@@ -175,38 +177,92 @@ namespace logpp {
         }
     }
 
-
-
+    /**
+     * @brief Shortcut method for logging a debug message.
+     * 
+     * @param msg The pure message.
+     * @param except (Optional) The exception thrown.
+     * @param line (Optional) The line at which the logger was called.
+     * @param func (Optional) The function/method in which the logger was called.
+     */
     void ILogger::debug(string msg, exception* except, int32_t line, string func) {
         auto level = LogLevel::Debug;
         logMessage(level, formatLogMessage(msg, level, func, line, except));
     }
 
+    /**
+     * @brief Shortcut method for logging an error message.
+     * 
+     * @param msg The pure message.
+     * @param except (Optional) The exception thrown.
+     * @param line (Optional) The line at which the logger was called.
+     * @param func (Optional) The function/method in which the logger was called.
+     */
     void ILogger::error(string msg, exception* except, int32_t line, string func) {
         auto level = LogLevel::Error;
         logMessage(level, formatLogMessage(msg, level, func, line, except));
     }
 
+    /**
+     * @brief Shortcut method for logging a fatal message.
+     * 
+     * @param msg The pure message.
+     * @param except (Optional) The exception thrown.
+     * @param line (Optional) The line at which the logger was called.
+     * @param func (Optional) The function/method in which the logger was called.
+     */
     void ILogger::fatal(string msg, exception* except, int32_t line, string func) {
         auto level = LogLevel::Fatal;
         logMessage(level, formatLogMessage(msg, level, func, line, except));
     }
 
+    /**
+     * @brief Shortcut method for logging an informational message.
+     * 
+     * @param msg The pure message.
+     * @param except (Optional) The exception thrown.
+     * @param line (Optional) The line at which the logger was called.
+     * @param func (Optional) The function/method in which the logger was called.
+     */
     void ILogger::info(string msg, exception* except, int32_t line, string func) {
         auto level = LogLevel::Info;
         logMessage(level, formatLogMessage(msg, level, func, line, except));
     }
 
+    /**
+     * @brief Shortcut method for logging a good message.
+     * 
+     * @param msg The pure message.
+     * @param except (Optional) The exception thrown.
+     * @param line (Optional) The line at which the logger was called.
+     * @param func (Optional) The function/method in which the logger was called.
+     */
     void ILogger::ok(string msg, exception* except, int32_t line, string func) {
         auto level = LogLevel::Ok;
         logMessage(level, formatLogMessage(msg, level, func, line, except));
     }
 
+    /**
+     * @brief Shortcut method for logging a trace message.
+     * 
+     * @param msg The pure message.
+     * @param except (Optional) The exception thrown.
+     * @param line (Optional) The line at which the logger was called.
+     * @param func (Optional) The function/method in which the logger was called.
+     */
     void ILogger::trace(string msg, exception* except, int32_t line, string func) {
         auto level = LogLevel::Trace;
         logMessage(level, formatLogMessage(msg, level, func, line, except));
     }
 
+    /**
+     * @brief Shortcut method for logging a warning message.
+     * 
+     * @param msg The pure message.
+     * @param except (Optional) The exception thrown.
+     * @param line (Optional) The line at which the logger was called.
+     * @param func (Optional) The function/method in which the logger was called.
+     */
     void ILogger::warning(string msg, exception* except, int32_t line, string func) {
         auto level = LogLevel::Warning;
         logMessage(level, formatLogMessage(msg, level, func, line, except));

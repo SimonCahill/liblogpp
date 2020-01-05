@@ -27,6 +27,15 @@ namespace logpp {
 	using std::string;
     using std::stringstream;
 
+    /**
+     * @brief Base abstract logger class.
+     * 
+     * This class contains the very most basic implementation of a logger provided by this library.
+     * This logger cannot be used directly, or instantiated.
+     * Rather, this logger implementation is used as a template for other loggers provided.
+     * 
+     * This class may be inherited by other applications as the developer(s) see fit.
+     */
 	class ILogger {
    	    public: // +++ STATIC +++
             //==========================================================================================
@@ -38,21 +47,27 @@ namespace logpp {
             // This is especially handy if you're logging to one large file where different programs'
             // log messages are saved.
             //==========================================================================================
-            static string LOG_FMT_DATE; // ${date} => the current date w/ the set date format
-            static string LOG_FMT_TIME; // ${time} => the current time w/ the set time format
-            static string LOG_FMT_DATETIME; // ${datetime} => the current time and date w/ the set formats
-            static string LOG_FMT_LOGLVL; // ${llevel} => the log level of the current message
-            static string LOG_FMT_MSG; // ${lmsg} => the actual log message
-            static string LOG_FMT_FUNC; // ${func} => if the current function was set via param, output that
-            static string LOG_FMT_LINE; // ${lineno} => if the current line number was set via param, output that
-            static string LOG_FMT_CLASS; // ${class} => if the class name was set, output that
-            static string LOG_FMT_EXCEPT; // ${except} => if an exception was passed, output that
-            static string LOG_FMT_APPNAME; // ${appname} => if the application's name was set, output that
-            static string LOG_FMT_CUSTOM; // ${custom} => this allows for some custom flare to be added to log outputs
+            static string LOG_FMT_DATE; ///! ${date} => the current date w/ the set date format
+            static string LOG_FMT_TIME; ///! ${time} => the current time w/ the set time format
+            static string LOG_FMT_DATETIME; ///! ${datetime} => the current time and date w/ the set formats
+            static string LOG_FMT_LOGLVL; ///! ${llevel} => the log level of the current message
+            static string LOG_FMT_MSG; ///! ${lmsg} => the actual log message
+            static string LOG_FMT_FUNC; ///! ${func} => if the current function was set via param, output that
+            static string LOG_FMT_LINE; ///! ${lineno} => if the current line number was set via param, output that
+            static string LOG_FMT_CLASS; ///! ${class} => if the class name was set, output that
+            static string LOG_FMT_EXCEPT; ///! ${except} => if an exception was passed, output that
+            static string LOG_FMT_APPNAME; ///! ${appname} => if the application's name was set, output that
+            static string LOG_FMT_CUSTOM; ///! ${custom} => this allows for some custom flare to be added to log outputs
 
 	    public:
             virtual ~ILogger(); ///!< Virtual destructor
 
+            /**
+             * @brief Gets a value indicating whether to flush the underlying buffer after each write.
+             * 
+             * @return true If the buffer should be flushed after each write.
+             * @return false Otherwise.
+             */
             bool flushBufferAfterWrite() { return this->_flushBufferAfterWrite; }
 
             /**
@@ -109,7 +124,7 @@ namespace logpp {
             /**
              * @brief Gets the maximum size for the logger buffer.
              *
-             * @remarks A size of zero implies the buffer will be flushed after each write and will override @link flushBufferAfterEachWrite() @endlink
+             * @remarks A size of zero implies the buffer will be flushed after each write and will override @link flushBufferAfterEachWrite @endlink
              *
              * @return The maximum configured buffer size.
              */
@@ -192,7 +207,7 @@ namespace logpp {
             void setMaxBufferSize(uint32_t maxSize) { this->_maxBufferSize = maxSize; }
 
 	    protected:
-	        ILogger(string logName, LogLevel maxLevel, uint32_t bufferSize, bool flushBufferAfterWrite);
+	        ILogger(string logName, LogLevel maxLevel, uint32_t bufferSize, bool flushBufferAfterWrite); ///!< Base constructor.
 
             /**
              * @brief Formats an entire log message which may then be directly printed to any given (string) output.

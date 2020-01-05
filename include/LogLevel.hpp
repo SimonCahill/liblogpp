@@ -120,6 +120,13 @@ namespace logpp {
          return false;
     }
 
+    /**
+     * @brief Converts a log level to its string form.
+     * 
+     * @param level The log level to convert.
+     * 
+     * @return string The string representation of the log level.
+     */
     string toString(const LogLevel level) {
         switch (level) {
             case LogLevel::Ok: return "Ok";
@@ -132,6 +139,54 @@ namespace logpp {
             default: return "Unknown";
         }
     }
+
+    //////////////////////////////////
+    //      OPERATOR OVERLOADS      //
+    //////////////////////////////////
+
+    /**
+     * @brief Operator overload, determines whether one log level is lower than another.
+     * 
+     * @param a The log level to test.
+     * @param b The log level to test against.
+     * 
+     * @return true If a is less than b. 
+     * @return false Otherwise.
+     */
+    bool operator<(LogLevel a, LogLevel b) { return ((int32_t)a) < ((int32_t)b); }
+
+    /**
+     * @brief Operator overload, determines whether one log level is less than or equal to another.
+     * 
+     * @param a The log level to test.
+     * @param b The log level to test against.
+     * 
+     * @return true If a is less than or equal to b. 
+     * @return false Otherwise.
+     */
+    bool operator<=(LogLevel a, LogLevel b) { return ((int32_t)a) <= ((int32_t)b); }
+
+    /**
+     * @brief Operator overload, determines whether one log level is higher than another.
+     * 
+     * @param a The log level to test.
+     * @param b The log level to test against.
+     * 
+     * @return true If a is greater than b. 
+     * @return false Otherwise.
+     */
+    bool operator>(LogLevel a, LogLevel b) { return ((int32_t)a) > ((int32_t)b); }
+
+    /**
+     * @brief Operator overload, determines whether one log level is greater than or equal to another.
+     * 
+     * @param a The log level to test.
+     * @param b The log level to test against.
+     * 
+     * @return true If a is greater than or equal to b. 
+     * @return false Otherwise.
+     */
+    bool operator<=(LogLevel a, LogLevel b) { return ((int32_t)a) >= ((int32_t)b); }
 
 }
 
