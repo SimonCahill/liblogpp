@@ -176,7 +176,7 @@ namespace logpp {
             /**
              * @brief Sets the custom logger format. Default is default
              */
-            void setCurrentLoggerFormat(string loggerFormat = "[ ${datetime} ] [ ${llevel} ] ${lmsg}") { this->_loggerFormat = loggerFormat; }
+            void setCurrentLoggerFormat(string loggerFormat = "[ ${date} ${time} ] [ ${llevel} ] ${lmsg}") { this->_loggerFormat = loggerFormat; }
 
             /**
              * @brief Sets the custom name for this logger. If default, generates random ID.

@@ -82,63 +82,12 @@ namespace logpp {
      *
      * @returns @code true @endcode if the log level is considered bad.
      */
-    bool isBadLog(LogLevel level) { return ((uint32_t)level) >= 4; }
+    inline bool isBadLog(LogLevel level) { return ((uint32_t)level) >= 4; }
 
-    /**
-     * @brief Attempts to parse a string value to a LogLevel value.
-     * 
-     * @param level The string to parse.
-     * @param out A reference to a LogLevel variable which will contain the parsed value.
-     * @return true If parsing was successful and a matching value was found.
-     * @return false Otherwise.
-     */
-    bool tryParseLogLevel(string level, LogLevel& out) {
-        stringToLower(level);
-        auto cString = level.c_str();
-        auto numericValue = strtol(cString, nullptr, 10);
+    
+    bool tryParseLogLevel(string level, LogLevel& out); ///!< Attempts to parse a string to a LogLevel.
 
-         if (level == "ok" || numericValue == 0) {
-             out = LogLevel::Ok;
-             return true;
-         } else if (level == "info" || numericValue == 1) {
-             out = LogLevel::Info;
-             return true;
-         } else if (level == "warning" || numericValue == 2) {
-             out = LogLevel::Warning;
-             return true;
-         } else if (level == "fatal" || numericValue == 3) {
-             out = LogLevel::Fatal;
-             return true;
-         } else if (level == "debug" || numericValue == 4) {
-             out = LogLevel::Debug;
-             return true;
-         } else if (level == "trace" || numericValue == 5) {
-             out = LogLevel::Trace;
-             return true;
-         }
-
-         return false;
-    }
-
-    /**
-     * @brief Converts a log level to its string form.
-     * 
-     * @param level The log level to convert.
-     * 
-     * @return string The string representation of the log level.
-     */
-    string toString(const LogLevel level) {
-        switch (level) {
-            case LogLevel::Ok: return "Ok";
-            case LogLevel::Info: return "Info";
-            case LogLevel::Warning: return "Warning";
-            case LogLevel::Error: return "Error";
-            case LogLevel::Fatal: return "Fatal";
-            case LogLevel::Debug: return "Debug";
-            case LogLevel::Trace: return "Trace";
-            default: return "Unknown";
-        }
-    }
+    string toString(const LogLevel level); ///!< Converts a log level to its string representation
 
     //////////////////////////////////
     //      OPERATOR OVERLOADS      //
@@ -153,7 +102,7 @@ namespace logpp {
      * @return true If a is less than b. 
      * @return false Otherwise.
      */
-    bool operator<(LogLevel a, LogLevel b) { return ((int32_t)a) < ((int32_t)b); }
+    inline bool operator<(LogLevel a, LogLevel b) { return ((int32_t)a) < ((int32_t)b); }
 
     /**
      * @brief Operator overload, determines whether one log level is less than or equal to another.
@@ -164,7 +113,7 @@ namespace logpp {
      * @return true If a is less than or equal to b. 
      * @return false Otherwise.
      */
-    bool operator<=(LogLevel a, LogLevel b) { return ((int32_t)a) <= ((int32_t)b); }
+    inline bool operator<=(LogLevel a, LogLevel b) { return ((int32_t)a) <= ((int32_t)b); }
 
     /**
      * @brief Operator overload, determines whether one log level is higher than another.
@@ -175,7 +124,7 @@ namespace logpp {
      * @return true If a is greater than b. 
      * @return false Otherwise.
      */
-    bool operator>(LogLevel a, LogLevel b) { return ((int32_t)a) > ((int32_t)b); }
+    inline bool operator>(LogLevel a, LogLevel b) { return ((int32_t)a) > ((int32_t)b); }
 
     /**
      * @brief Operator overload, determines whether one log level is greater than or equal to another.
@@ -186,7 +135,7 @@ namespace logpp {
      * @return true If a is greater than or equal to b. 
      * @return false Otherwise.
      */
-    bool operator<=(LogLevel a, LogLevel b) { return ((int32_t)a) >= ((int32_t)b); }
+    inline bool operator>=(LogLevel a, LogLevel b) { return ((int32_t)a) >= ((int32_t)b); }
 
 }
 

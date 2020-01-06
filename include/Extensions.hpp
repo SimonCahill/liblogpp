@@ -93,11 +93,11 @@ namespace logpp {
      * @param replacement The replacement value for needle.
      */
     inline void stringReplaceAll(string& haystack, const string needle, string replacement) {
-        if (haystack.empty() || needle.empty() || replacement.empty()) return; // Simply return if either are empty
-
-        while (stringContains(haystack, needle)) {
-            stringReplace(haystack, needle, replacement);
+        if (haystack.empty() || needle.empty() || replacement.empty()) {
+            return; // Simply return if either are empty
         }
+
+        while (stringReplace(haystack, needle, replacement)) ;
     }
 
     /**
@@ -111,7 +111,7 @@ namespace logpp {
      */
     template<typename... Args>
     string formatString(const string& format, Args... args)  {
-        size_t stringSize = snprintf(NULL, 0, format.c_str(), args...) + 1; // +1 for \0
+        auto stringSize = snprintf(NULL, 0, format.c_str(), args...) + 1; // +1 for \0
         unique_ptr<char[]> buffer(new char[stringSize]);
 
         snprintf(buffer.get(), stringSize, format.c_str(), args...);

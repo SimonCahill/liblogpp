@@ -69,11 +69,14 @@ namespace logpp {
         this->_maxLoggingLevel = maxLevel;
         this->_dateFormatString = "%Y.%m.%d";
         this->_timeFormatString = "%H:%M";
-        this->_dateTimeFormatString = formatString("%s %s", _dateFormatString, _timeFormatString);
+        this->_dateTimeFormatString = formatString("%s %s", _dateFormatString.c_str(), _timeFormatString.c_str());
 
         // Buffer init
         this->_flushBufferAfterWrite = flushBufferAfterWrite;
         this->_maxBufferSize = bufferSize;
+
+        // Set default logger format
+        setCurrentLoggerFormat();
     }
 
     /**
@@ -81,9 +84,7 @@ namespace logpp {
      * 
      * @remarks Also flushes the buffer.
      */
-    ILogger::~ILogger() {
-        ILogger::flushBuffer();
-    }
+    ILogger::~ILogger() { }
 
     /**
      * @brief Virtual method for formatting log messages as desired.
@@ -95,24 +96,30 @@ namespace logpp {
      */
     string ILogger::formatLogMessage(string& msg, LogLevel lvl, string func, int32_t line, exception* except) {
         // logFormat local class variable containing formatting
-        if (_loggerFormat.empty() || msg.empty()) return msg;
+        if (_loggerFormat.empty() || msg.empty()) {
+            using std::cout; using std::endl;
 
-        string formattedMsg;
+            cout << "[Test] Logger format: " << getCurrentLoggerFormat() << "; Message: " << msg << endl;
+            return msg;
+        }
 
-        stringReplaceAll(msg, LOG_FMT_DATE, getCurrentDate());
-        stringReplaceAll(msg, LOG_FMT_TIME, getCurrentTime());
-        stringReplaceAll(msg, LOG_FMT_DATETIME, getCurrentDateTime());
-        stringReplaceAll(msg, LOG_FMT_LOGLVL, toString(lvl));
-        stringReplaceAll(msg, LOG_FMT_MSG, msg);
-        stringReplaceAll(msg, LOG_FMT_CLASS, _className);
-        stringReplaceAll(msg, LOG_FMT_APPNAME, _appName);
-        stringReplaceAll(msg, LOG_FMT_CUSTOM, _customFlare);
+        string formattedMsg = getCurrentLoggerFormat();
 
-        stringReplaceAll(msg, LOG_FMT_FUNC, func.empty() ? "{{ no function name available }}" : func);
-        stringReplaceAll(msg, LOG_FMT_LINE, line == -1 ? "{{ no line no available }}" : to_string(line));
-        stringReplaceAll(msg, LOG_FMT_EXCEPT, except == nullptr ? "{{ no exception data available }}" : except->what());
+        // FIX: For some reason, this only works when passing the strings as a C string?!
+        stringReplaceAll(formattedMsg, LOG_FMT_DATE, getCurrentDate().c_str());
+        stringReplaceAll(formattedMsg, LOG_FMT_TIME, getCurrentTime().c_str());
+        stringReplaceAll(formattedMsg, LOG_FMT_DATETIME, getCurrentDateTime().c_str());
+        stringReplaceAll(formattedMsg, LOG_FMT_LOGLVL, toString(lvl).c_str());
+        stringReplaceAll(formattedMsg, LOG_FMT_MSG, msg.c_str());
+        stringReplaceAll(formattedMsg, LOG_FMT_CLASS, _className.c_str());
+        stringReplaceAll(formattedMsg, LOG_FMT_APPNAME, _appName.c_str());
+        stringReplaceAll(formattedMsg, LOG_FMT_CUSTOM, _customFlare.c_str());
 
-        return msg;
+        stringReplaceAll(formattedMsg, LOG_FMT_FUNC, func.empty() ? "{{ no function name available }}" : func);
+        stringReplaceAll(formattedMsg, LOG_FMT_LINE, line == -1 ? "{{ no line no available }}" : to_string(line));
+        stringReplaceAll(formattedMsg, LOG_FMT_EXCEPT, except == nullptr ? "{{ no exception data available }}" : except->what());
+
+        return formattedMsg;
     }
 
     // PUBLIC IMPLEMENTATION
