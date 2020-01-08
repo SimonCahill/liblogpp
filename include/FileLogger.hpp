@@ -25,6 +25,11 @@ namespace logpp {
 
         private:
             string _filename;
+            uint8_t _numLogs = 0;
+
+            bool fileExists (string filename);
+            int fileSize (string filename);
+            virtual void flushBuffer (); ///!< Flushes the underlying buffer.
     };
 
 }
