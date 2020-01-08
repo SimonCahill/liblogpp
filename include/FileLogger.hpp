@@ -26,7 +26,7 @@ namespace logpp {
         private:
             string _filename;
             uint8_t _numLogs = 0;
-            uint32_t _maxFileSize;
+            uint32_t _maxFileSize; //!< max size of log file in MB
 
             bool fileExists (string filename);
             int fileSize (string filename);
