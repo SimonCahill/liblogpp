@@ -20,16 +20,19 @@ namespace logpp {
      */
     class FileLogger : public ILogger {
         public:
-            FileLogger(string logName, LogLevel maxLogLevel, string filename, uint32_t bufferSize, bool flushBufferAfterWrite); //!< object constructor
+            FileLogger(string logName, LogLevel maxLogLevel, string filename, uint32_t bufferSize, uint32_t maxFileSize, bool flushBufferAfterWrite); //!< object constructor
             virtual ~FileLogger(); //!< virtual destructor
 
         private:
             string _filename;
             uint8_t _numLogs = 0;
+            uint32_t _maxFileSize; //!< max size of log file in MB
 
             bool fileExists (string filename);
             int fileSize (string filename);
-            virtual void flushBuffer (); ///!< Flushes the underlying buffer.
+            virtual void flushBuffer (); //!< Flushes the underlying buffer.
+            const uint32_t maxFileSize () const { return _maxFileSize; } //!< getter for _maxFileSize
+            void maxFileSize (const uint32_t maxFileSize) { _maxFileSize = maxFileSize; } //!< setter for _maxFileSize
     };
 
 }

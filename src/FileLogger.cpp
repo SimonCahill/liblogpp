@@ -33,11 +33,12 @@ namespace logpp {
     * @param bufferSize The maximum buffer size before flushing.
     * @param flushBufferAfterWrite Indicates whether to flush the buffer after each write to it.
     */
-    FileLogger::FileLogger (string logName, LogLevel maxLogLevel, string filename, uint32_t bufferSize, bool flushBufferAfterWrite) :
+    FileLogger::FileLogger (string logName, LogLevel maxLogLevel, string filename, uint32_t bufferSize, uint32_t maxFileSize, bool flushBufferAfterWrite) :
         ILogger(logName, maxLogLevel, bufferSize, flushBufferAfterWrite){
         
         if (fileExists (filename)) {
             _filename = filename;
+            FileLogger::maxFileSize (maxFileSize);
         } else {
             throw std::exception::exception ("File does not exist");
             // create file
@@ -82,7 +83,7 @@ namespace logpp {
      *
      */
     void FileLogger::flushBuffer () {
-        if (fileSize (_filename) > 100) {
+        if (fileSize (_filename) > _maxFileSize * 1000000) {
             if (_numLogs > 0) {
                 // delete last character
                 _filename.pop_back ();
