@@ -29,11 +29,11 @@ namespace logpp {
 
     /**
      * @brief Base abstract logger class.
-     * 
+     *
      * This class contains the very most basic implementation of a logger provided by this library.
      * This logger cannot be used directly, or instantiated.
      * Rather, this logger implementation is used as a template for other loggers provided.
-     * 
+     *
      * This class may be inherited by other applications as the developer(s) see fit.
      */
 	class ILogger {
@@ -64,7 +64,7 @@ namespace logpp {
 
             /**
              * @brief Gets a value indicating whether to flush the underlying buffer after each write.
-             * 
+             *
              * @return true If the buffer should be flushed after each write.
              * @return false Otherwise.
              */
@@ -228,6 +228,13 @@ namespace logpp {
              * @return A reference to the back-end string stream used as a buffer.
              */
             stringstream& getLogBuffer() { return this->_logBuffer; }
+
+			/**
+			 * @brief Gets the string representation of the underlying buffer.
+			 *
+			 * @return The string from the underlying buffer.
+			 */
+			string getLogBufferAsString() { return getLogBuffer().str(); }
 
 	    private:
             string          _appName;

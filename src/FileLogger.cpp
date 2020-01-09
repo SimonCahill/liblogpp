@@ -5,20 +5,22 @@
  * Co-author: Pascal Lüttmann
  */
 
- /****************************
-  *	    Local Includes	    *
-  ****************************/
+/****************************
+ *	    Local Includes	    *
+ ****************************/
 #include "FileLogger.hpp"
 
-  /***************************
-   *	    System Includes    *
-   ***************************/
+/***************************
+ *	    System Includes    *
+ ***************************/
+#include <exception>
 #include <iostream>
 #include <ostream>
 #include <sys/stat.h>
 
 namespace logpp {
 
+	using std::invalid_argument;
     using std::iostream;
     using std::ostream;
     using std::to_string;
@@ -33,18 +35,17 @@ namespace logpp {
     * @param bufferSize The maximum buffer size before flushing.
     * @param flushBufferAfterWrite Indicates whether to flush the buffer after each write to it.
     */
-    FileLogger::FileLogger (string logName, LogLevel maxLogLevel, string filename, uint32_t bufferSize, uint32_t maxFileSize, bool flushBufferAfterWrite) :
-        ILogger(logName, maxLogLevel, bufferSize, flushBufferAfterWrite){
-        
+    FileLogger::FileLogger (string logName, LogLevel maxLogLevel, string filename, uint32_t bufferSize, uint32_t maxFileSize, bool flushBufferAfterWrite, bool createFile):
+    ILogger(logName, maxLogLevel, bufferSize, flushBufferAfterWrite) {
         if (fileExists (filename)) {
             _filename = filename;
             FileLogger::maxFileSize (maxFileSize);
-        } else {
-            throw std::exception::exception ("File does not exist");
+        } else if (createFile) {
+			// Create file if required.
+		} else {
+            throw invalid_argument(formatString("File %s doesn't exist!", filename.c_str()));
             // create file
         }
-        
-
     }
 
     /**
@@ -83,20 +84,20 @@ namespace logpp {
      *
      */
     void FileLogger::flushBuffer () {
-        if (fileSize (_filename) > _maxFileSize * 1000000) {
+        if (fileSize (_filename) > _maxFileSize * 1'048'576) {
             if (_numLogs > 0) {
                 // delete last character
-                _filename.pop_back ();
-
+                _filename.pop_back();
             }
             // add/increment number at the end of _filename
-            _filename.append (to_string (_numLogs++));
+            _filename.append(to_string(_numLogs++));
         }
-        FILE *file = fopen (_filename.c_str (), "a");
+        FILE* file = fopen(_filename.c_str(), "a");
+
         if (file) {
-            fputs (getLogBuffer ().str ().c_str (), file);
-            fclose (file);
-            getLogBuffer ().clear ();
+            fputs(getLogBufferAsString().c_str(), file);
+            fclose(file);
+            getLogBuffer().clear();
         }
     }
 }
