@@ -66,3 +66,8 @@ if(${BUILD_STATIC})
 else()
     add_library(${PROJECT_NAME} SHARED ${FILES})
 endif()
+
+###
+# Export header files
+###
+target_include_directories(${PROJECT_NAME} PUBLIC include)
