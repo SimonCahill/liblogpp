@@ -97,9 +97,6 @@ namespace logpp {
     string ILogger::formatLogMessage(string& msg, LogLevel lvl, string func, int32_t line, exception* except) {
         // logFormat local class variable containing formatting
         if (_loggerFormat.empty() || msg.empty()) {
-            using std::cout; using std::endl;
-
-            cout << "[Test] Logger format: " << getCurrentLoggerFormat() << "; Message: " << msg << endl;
             return msg;
         }
 
@@ -145,8 +142,8 @@ namespace logpp {
      */
     string ILogger::getCurrentDateTime() {
         auto timeStruct = getCurrentLocalTime();
-        string charBuffer;
-
+        char charBuffer[128];
+        
         strftime(&charBuffer[0], 128, _dateTimeFormatString.c_str(), &timeStruct);
 
         return charBuffer;
@@ -175,8 +172,13 @@ namespace logpp {
      * @param msg The (formatted) message to output.
      */
     void ILogger::logMessage(LogLevel level, string msg) {
+        if (msg.empty()) return;
+
         using std::endl;
-        _logBuffer << msg << endl; // Add message to buffer
+        // _logBuffer << msg << endl; // Add message to buffer
+        if (*msg.end() == '\n') {
+            _logBuffer << msg;
+        } else _logBuffer << msg << endl;
 
         // Now check if we need to flush
         if (isBadLog(level) || (getMaxBufferSize() == 0 || getBufferSize() >= getMaxBufferSize()) || flushBufferAfterWrite()) {
