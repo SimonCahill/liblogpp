@@ -9,6 +9,7 @@
  *	    Local Includes	    *
  ****************************/
 #include "FileLogger.hpp"
+#include "LogExtensions.hpp"
 
 /***************************
  *	    System Includes    *
@@ -35,13 +36,15 @@ namespace logpp {
     * @param bufferSize The maximum buffer size before flushing.
     * @param flushBufferAfterWrite Indicates whether to flush the buffer after each write to it.
     */
-    FileLogger::FileLogger (string logName, LogLevel maxLogLevel, string filename, uint32_t bufferSize, uint32_t maxFileSize, bool flushBufferAfterWrite, bool createFile):
+    FileLogger::FileLogger(string logName, LogLevel maxLogLevel, string filename, uint32_t bufferSize, uint32_t maxFileSize,
+                           bool flushBufferAfterWrite, bool createFileIfNotExists):
     ILogger(logName, maxLogLevel, bufferSize, flushBufferAfterWrite) {
-        if (fileExists (filename)) {
-            _filename = filename;
+        _filename = filename;
+        if (fileExists(filename)) {
             FileLogger::maxFileSize (maxFileSize);
-        } else if (createFile) {
+        } else if (createFileIfNotExists) {
 			// Create file if required.
+            createFile(filename);
 		} else {
             throw invalid_argument(formatString("File %s doesn't exist!", filename.c_str()));
             // create file
@@ -78,6 +81,24 @@ namespace logpp {
         stat (filename.c_str (), &buffer);
         return buffer.st_size;
     }
+    
+    /**
+     * @brief Writes a message to the underlying log buffer and flushes the buffer accordingly.
+     *
+     * @remarks Bad log levels (log levels above four) will cause the buffer to always be flushed in this default implementation!
+     *
+     * @param level The level of the current log.
+     * @param msg The (formatted) message to output.
+     */
+    void FileLogger::logMessage(LogLevel level, string msg) {
+        using std::endl;
+        getLogBuffer() << msg << endl; // Add message to buffer
+
+        // Now check if we need to flush
+        if (isBadLog(level) || (getMaxBufferSize() == 0 || getBufferSize() >= getMaxBufferSize()) || flushBufferAfterWrite()) {
+            flushBuffer();
+        }
+    }
 
     /**
      * @brief writes buffer into given file. If file is greater than _maxFileSize (in MiB) in size a new file with incremented endnumber will be created
@@ -97,7 +118,7 @@ namespace logpp {
         if (file) {
             fputs(getLogBufferAsString().c_str(), file);
             fclose(file);
-            getLogBuffer().clear();
+            clearStringStream(getLogBuffer());
         }
     }
 }
