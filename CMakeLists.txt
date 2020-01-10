@@ -47,6 +47,7 @@ add_compile_options(
     -Wpedantic # Be pedantic about little things
     -Wall # All warnings as errors
     -Wno-format-security # This'll stay our little secret
+    -Wno-reorder
 )
 
 ###
