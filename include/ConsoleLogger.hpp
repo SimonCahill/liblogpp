@@ -8,6 +8,7 @@
 #define LOGPP_CONSOLELOGGER_HPP
 
 #include "ILogger.hpp"
+#include "FileLogger.hpp"
 
 namespace logpp {
 
@@ -19,7 +20,11 @@ namespace logpp {
      */
     class ConsoleLogger: public ILogger {
         public:
-            ConsoleLogger(string logName, LogLevel maxLogLevel, bool outputBadLogsToStderr, uint32_t bufferSize, bool flushBufferAfterWrite); ///!< Object constructor.
+            ConsoleLogger(string logName, LogLevel maxLogLevel, bool outputBadLogsToStderr, 
+                          uint32_t bufferSize, bool flushBufferAfterWrite); ///!< Object constructor.
+            ConsoleLogger(string logName, LogLevel maxLogLevel, bool outputBadLogsToStderr,
+                          uint32_t bufferSize, bool flushBufferAfterWrite, bool logToFile, string logPath,
+                          uint32_t maxFileSize); ///!< Object constructor.
             virtual ~ConsoleLogger(); ///!< Virtual destructor.
             
             /**
@@ -58,6 +63,9 @@ namespace logpp {
         private:
             bool _outputBadLogsToStderr;
             bool _outputDebugToStderr;
+            bool _logToFile;
+
+            ILogger* _fileLogger;
     };
 
 }

@@ -2,7 +2,7 @@
  * ConsoleLogger.hpp
  *
  * log++ - Intuitive logging library for C++ written by Simon Cahill.
- * Co-author: Pascal Lüttmann
+ * Co-author: Pascal Lï¿½ttmann
  */
 
 #ifndef FILE_LOGGER_HPP
@@ -20,7 +20,8 @@ namespace logpp {
      */
     class FileLogger: public ILogger {
         public:
-            FileLogger(string logName, LogLevel maxLogLevel, string filename, uint32_t bufferSize, uint32_t maxFileSizeInMiB, bool flushBufferAfterWrite, bool createFile = false); //!< object constructor
+            FileLogger(string logName, LogLevel maxLogLevel, string filename, uint32_t bufferSize, 
+                       uint32_t maxFileSizeInMiB, bool flushBufferAfterWrite, bool createFile = false); //!< object constructor
             virtual ~FileLogger(); //!< virtual destructor
 
         private:

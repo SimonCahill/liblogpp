@@ -8,6 +8,7 @@
  *	    Local Includes	    *
  ****************************/
  #include "ConsoleLogger.hpp"
+ #include "LogExtensions.hpp"
 
 /***************************
  *	    System Includes    *
@@ -30,14 +31,28 @@ namespace logpp {
      * @param flushBufferAfterWrite Indicates whether to flush the buffer after each write to it.
      */
     ConsoleLogger::ConsoleLogger(string logName, LogLevel maxLogLevel, bool outputBadLogsToStderr, uint32_t bufferSize, bool flushBufferAfterWrite):
-    ILogger(logName, maxLogLevel, flushBufferAfterWrite, bufferSize) {
+    ILogger(logName, maxLogLevel, flushBufferAfterWrite, bufferSize), _fileLogger(nullptr), _logToFile(false) {
         setOutputBadLogsToStderr(outputBadLogsToStderr);
+    }
+
+    ConsoleLogger::ConsoleLogger(string logName, LogLevel maxLogLevel, bool outputBadLogsToStderr, uint32_t bufferSize, bool flushBufferAfterWrite,
+                                 bool logToFile, string logPath, uint32_t maxFileSize): 
+    ConsoleLogger(logName, maxLogLevel, outputBadLogsToStderr, flushBufferAfterWrite, bufferSize) {
+        this->_logToFile = logToFile;
+        if (_logToFile) {
+            _fileLogger = new FileLogger(logName, maxLogLevel, formatString("%s/%s.log", logPath.c_str(), logName.c_str()), bufferSize, maxFileSize, flushBufferAfterWrite, true);
+        }
     }
 
     /**
      * @brief Destroy the Console Logger:: Console Logger object
      */
-    ConsoleLogger::~ConsoleLogger() {}
+    ConsoleLogger::~ConsoleLogger() {
+        // Destroy FileLogger object if it was set.
+        if (_logToFile && _fileLogger != nullptr) {
+            delete _fileLogger;
+        }
+    }
 
     /**
      * @brief Flushes the underlying buffer to its respective output.
@@ -67,12 +82,14 @@ namespace logpp {
         using std::cerr;
         using std::endl;
 
+        if (_logToFile && _fileLogger != nullptr)
+            _fileLogger->logMessage(level, msg);
+
         if (outputBadLogsToStderr() && isBadLog(level)) {
             // Bypass log buffer and print directly to stderr.
             cerr << msg << endl;
             return;
         }
-
         ILogger::logMessage(level, msg);
     }
 
