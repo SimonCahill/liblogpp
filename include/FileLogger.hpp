@@ -24,6 +24,8 @@ namespace logpp {
                        uint32_t maxFileSizeInMiB, bool flushBufferAfterWrite, bool createFile = false); //!< object constructor
             virtual ~FileLogger(); //!< virtual destructor
 
+            virtual void logMessage(LogLevel level, string msg);
+
         private:
             string _filename;
             uint8_t _numLogs = 0;
