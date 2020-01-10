@@ -63,8 +63,15 @@ namespace logpp {
 
         // TODO: Implement functionality where bad logs are output to cerr if desired.
         // This will require overriding logMessage()
-        cout << getLogBuffer().str() << endl;
-        getLogBuffer().clear();
+        auto output = getLogBufferAsString();
+
+        if (output.empty()) return;
+        
+        if (*output.end() == '\n') {
+            cout << output;
+        } else cout << output;
+        
+        clearStringStream(getLogBuffer());
     }
 
     /**
@@ -87,7 +94,9 @@ namespace logpp {
 
         if (outputBadLogsToStderr() && isBadLog(level)) {
             // Bypass log buffer and print directly to stderr.
-            cerr << msg << endl;
+            if (*msg.end() == '\n') {
+                cerr << msg;
+            } else cerr << msg << endl;
             return;
         }
         ILogger::logMessage(level, msg);
