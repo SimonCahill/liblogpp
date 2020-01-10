@@ -13,14 +13,18 @@
 
  #include <algorithm>
  #include <cctype>
+ #include <fstream>
  #include <iostream>
  #include <memory>
+ #include <ostream>
+ #include <sstream>
  #include <string>
 
 namespace logpp {
 
     using std::iostream;
     using std::string;
+    using std::stringstream;
     using std::tolower;
     using std::toupper;
     using std::transform;
@@ -129,6 +133,32 @@ namespace logpp {
         auto timeStruct = *localtime(&timeNow);
 
         return timeStruct;
+    }
+
+    /**
+     * @brief Create a File object
+     * 
+     * @param filePath 
+     * @return true 
+     * @return false 
+     */
+    inline bool createFile(const string filePath) {
+        using std::ofstream;
+        ofstream fileToCreate(filePath);
+        //fileToCreate << '\0';
+        fileToCreate.close();
+
+        return true;
+    }
+
+    /**
+     * @brief Clears a string stream of all its contents.
+     * 
+     * @param stream The stream to clear.
+     */
+    inline void clearStringStream(stringstream& stream) {
+        stream.str(string());
+        stream.clear();
     }
 
 }
