@@ -65,7 +65,7 @@ namespace logpp {
             bool _outputDebugToStderr;
             bool _logToFile;
 
-            ILogger* _fileLogger;
+            FileLogger* _fileLogger;
     };
 
 }
