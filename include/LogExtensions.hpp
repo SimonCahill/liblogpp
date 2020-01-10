@@ -1,5 +1,5 @@
 /**
- * liblog++.hpp
+ * LogExtensions.hpp
  *
  * Intuitive logging library for C++ written by Simon Cahill.
  */

@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-#include <Extensions.hpp>
+#include <LogExtensions.hpp>
 #include <ILogger.hpp>
 #include <ConsoleLogger.hpp>
 

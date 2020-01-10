@@ -11,7 +11,7 @@
  *	    Local Includes	   *
  ***************************/
 
- #include "Extensions.hpp"
+ #include "LogExtensions.hpp"
 
 /***************************
  *	    System Includes    *

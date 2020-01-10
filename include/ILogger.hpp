@@ -10,7 +10,7 @@
 /****************************
  *	    Local Includes	    *
  ****************************/
-#include "Extensions.hpp"
+#include "LogExtensions.hpp"
 #include "LogLevel.hpp"
 
 /***************************
