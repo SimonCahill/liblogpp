@@ -2,7 +2,7 @@
  * ConsoleLogger.hpp
  *
  * log++ - Intuitive logging library for C++ written by Simon Cahill.
- * Co-author: Pascal Lüttmann
+ * Co-author: Pascal Lï¿½ttmann
  */
 
 /****************************
@@ -73,18 +73,18 @@ namespace logpp {
      *
      * @return size of file in bytes
      */
-    int FileLogger::fileSize (string filename) {
+    uint32_t FileLogger::fileSize(string filename) {
         struct stat buffer;
         stat (filename.c_str (), &buffer);
         return buffer.st_size;
     }
 
     /**
-     * @brief writes buffer into given file. If file is greater than 100 bytes in size a new file with incremented endnumber will be created
+     * @brief writes buffer into given file. If file is greater than _maxFileSize (in MiB) in size a new file with incremented endnumber will be created
      *
      */
     void FileLogger::flushBuffer () {
-        if (fileSize (_filename) > _maxFileSize * 1'048'576) {
+        if (fileSize(_filename) > _maxFileSize * 1'048'576u) {
             if (_numLogs > 0) {
                 // delete last character
                 _filename.pop_back();

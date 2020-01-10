@@ -30,7 +30,7 @@ namespace logpp {
             uint32_t _maxFileSize; //!< max size of log file in MB
 
             bool fileExists(string filename);
-            int fileSize(string filename);
+            uint32_t fileSize(string filename);
             virtual void flushBuffer(); //!< Flushes the underlying buffer.
             const uint32_t maxFileSizeInMiB() const { return _maxFileSize; } //!< getter for _maxFileSize
             void maxFileSize(const uint32_t maxFileSize) { _maxFileSize = maxFileSize; } //!< setter for _maxFileSize
