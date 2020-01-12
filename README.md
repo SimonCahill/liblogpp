@@ -151,3 +151,8 @@ This means all you'll have to do, is implement the following code.
         return 0;
     }
 ```
+
+# Todos
+This section contains current todos.
+
+ - Implement StreamLogger class.
