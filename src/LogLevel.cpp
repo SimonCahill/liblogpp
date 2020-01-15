@@ -14,10 +14,12 @@
  ***************************/
 
  #include "LogLevel.hpp"
+ #include "LogExtensions.hpp"
 
 /***************************
  *	    System Includes    *
  ***************************/
+#include <string>
 
 namespace logpp {
 
@@ -75,6 +77,24 @@ namespace logpp {
             case LogLevel::Trace: return "Trace";
             default: return "Unknown";
         }
+    }
+
+    /**
+     * @brief Converts a log level to its string representation and colours it accordingly.
+     * 
+     * @param level The log level to convert
+     * @param foreground The desired foreground colour.
+     * @param background The desired background colour.
+     * 
+     * @return string The colours string representation of the passed log level.
+     */
+    string toString(const LogLevel level, TextColour foreground, TextColour background) {
+        using std::to_string;
+        return formatString(
+            "\033[;%s;%sm%s\033[0m", toString(level).c_str(),
+            foreground == TextColour::None ? "" : to_string((uint32_t)foreground).c_str(),
+            background == TextColour::None ? "" : to_string((uint32_t)background).c_str()
+        );
     }
     
 } // namespace logpp

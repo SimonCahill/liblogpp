@@ -60,7 +60,22 @@ namespace logpp {
              */
             void setOutputDebugLogsToStderr(bool outputToStderr) { this->_outputDebugToStderr = outputToStderr; }
 
+        protected:
+            /**
+             * @brief Formats an entire log message which may then be directly printed to any given (string) output.
+             *
+             * @param msg A reference to a string containing the log message. Also used as the output for the entire (formatted) message.
+             * @param lvl The log level for the given message. Used for formatting.
+             * @param func The function which called the logger. Used for formatting.
+             * @param line The line at which the logger was called. Used for formatting.
+             * @param except A pointer to an exception which should be logged.
+             *
+             * @return Returns the entire formatted message so it may be used in a function call.
+             */
+            virtual string formatLogMessage(string& msg, LogLevel lvl, string func = "", int32_t line = -1, exception* except = nullptr);
+
         private:
+            bool _colourLogLevels;
             bool _outputBadLogsToStderr;
             bool _outputDebugToStderr;
             bool _logToFile;
