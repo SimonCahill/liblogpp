@@ -35,7 +35,7 @@ set(CMAKE_CXX_EXTENSIONS ON)
 # This is the part where you get to decide whether you
 # want a static or shared library
 ###
-set(BUILD_STATIC True)
+set(logpp_BUILD_STATIC True)
 
 ###
 # Set compiler flags
@@ -62,7 +62,7 @@ include_directories(
 ###
 file(GLOB_RECURSE FILES ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINKS src/*.cpp)
 
-if(${BUILD_STATIC})
+if(${logpp_BUILD_STATIC})
     add_library(${PROJECT_NAME} STATIC ${FILES})
 else()
     add_library(${PROJECT_NAME} SHARED ${FILES})
