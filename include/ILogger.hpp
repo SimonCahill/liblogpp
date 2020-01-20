@@ -47,17 +47,23 @@ namespace logpp {
             // This is especially handy if you're logging to one large file where different programs'
             // log messages are saved.
             //==========================================================================================
-            static string LOG_FMT_DATE; ///! ${date} => the current date w/ the set date format
-            static string LOG_FMT_TIME; ///! ${time} => the current time w/ the set time format
-            static string LOG_FMT_DATETIME; ///! ${datetime} => the current time and date w/ the set formats
-            static string LOG_FMT_LOGLVL; ///! ${llevel} => the log level of the current message
-            static string LOG_FMT_MSG; ///! ${lmsg} => the actual log message
-            static string LOG_FMT_FUNC; ///! ${func} => if the current function was set via param, output that
-            static string LOG_FMT_LINE; ///! ${lineno} => if the current line number was set via param, output that
-            static string LOG_FMT_CLASS; ///! ${class} => if the class name was set, output that
-            static string LOG_FMT_EXCEPT; ///! ${except} => if an exception was passed, output that
-            static string LOG_FMT_APPNAME; ///! ${appname} => if the application's name was set, output that
-            static string LOG_FMT_CUSTOM; ///! ${custom} => this allows for some custom flare to be added to log outputs
+            const static string LOG_FMT_DATE; ///! ${date} => the current date w/ the set date format
+            const static string LOG_FMT_TIME; ///! ${time} => the current time w/ the set time format
+            const static string LOG_FMT_DATETIME; ///! ${datetime} => the current time and date w/ the set formats
+            const static string LOG_FMT_LOGLVL; ///! ${llevel} => the log level of the current message
+            const static string LOG_FMT_MSG; ///! ${lmsg} => the actual log message
+            const static string LOG_FMT_FUNC; ///! ${func} => if the current function was set via param, output that
+            const static string LOG_FMT_LINE; ///! ${lineno} => if the current line number was set via param, output that
+            const static string LOG_FMT_CLASS; ///! ${class} => if the class name was set, output that
+            const static string LOG_FMT_EXCEPT; ///! ${except} => if an exception was passed, output that
+            const static string LOG_FMT_APPNAME; ///! ${appname} => if the application's name was set, output that
+            const static string LOG_FMT_CUSTOM; ///! ${custom} => this allows for some custom flare to be added to log outputs
+
+            const static string DEFAULT_LOG_FMT; ///!< logpp's default log format: [ ${date} ${time} ] [ ${llevel} ] ${lmsg}
+            const static string EXCEPT_LOG_FMT; ///!< Adds exception logging to a log format: [ ${datetime} ] [ ${llevel} ] ${lmsg}: ${except}  
+            const static string VERBOSE_LOG_FMT; ///!< Very verbose logging for debug purposes: [ ${datetime} ] [ ${llevel} ] [ ${func}:${lineno} ] ${lmsg}
+            const static string CLASS_LOG_FMT; ///!< A logger format containing the current class: [ ${datetime} ] [ ${llevel} ] [ ${class} ] ${lmsg}
+            const static string VERBOSE_CLASS_LOG_FMT; ///!< A verbose class logging format: [ ${datetime} ] [ ${llevel} ] [ ${class}#${func}:${lineno} ] ${lmsg}
 
 	    public:
             virtual ~ILogger(); ///!< Virtual destructor
@@ -189,7 +195,7 @@ namespace logpp {
             /**
              * @brief Sets the custom logger format. Default is default
              */
-            void setCurrentLoggerFormat(string loggerFormat = "[ ${date} ${time} ] [ ${llevel} ] ${lmsg}") { this->_loggerFormat = loggerFormat; }
+            void setCurrentLoggerFormat(string loggerFormat = DEFAULT_LOG_FMT) { this->_loggerFormat = loggerFormat; }
 
             /**
              * @brief Sets the custom name for this logger. If default, generates random ID.

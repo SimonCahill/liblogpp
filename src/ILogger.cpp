@@ -41,17 +41,23 @@ namespace logpp {
     // This is especially handy if you're logging to one large file where different programs'
     // log messages are saved.
     //==========================================================================================
-    string ILogger::LOG_FMT_DATE = 	    "${date}"; 	// ${date} => the current date w/ the set date format
-    string ILogger::LOG_FMT_TIME = 	    "${time}"; 	// ${time} => the current time w/ the set time format
-    string ILogger::LOG_FMT_DATETIME = 	"${datetime}"; 	// ${datetime} => the current time and date w/ the set formats
-    string ILogger::LOG_FMT_LOGLVL = 	"${llevel}"; 	// ${llevel} => the log level of the current message
-    string ILogger::LOG_FMT_MSG = 	    "${lmsg}"; 	// ${lmsg} => the actual log message
-    string ILogger::LOG_FMT_FUNC = 	    "${func}"; 	// ${func} => if the current function was set via param, output that
-    string ILogger::LOG_FMT_LINE = 	    "${lineno}"; 	// ${lineno} => if the current line number was set via param, output that
-    string ILogger::LOG_FMT_CLASS = 	"${class}"; 	// ${class} => if the class name was set, output that
-    string ILogger::LOG_FMT_EXCEPT = 	"${except}"; 	// ${except} => if an exception was passed, output that
-    string ILogger::LOG_FMT_APPNAME = 	"${appname}"; 	// ${appname} => if the application's name was set, output that
-    string ILogger::LOG_FMT_CUSTOM = 	"${custom}"; 	// ${custom} => this allows for some custom flare to be added to log outputs
+    const string ILogger::LOG_FMT_DATE = 	        "${date}"; 	// ${date} => the current date w/ the set date format
+    const string ILogger::LOG_FMT_TIME = 	        "${time}"; 	// ${time} => the current time w/ the set time format
+    const string ILogger::LOG_FMT_DATETIME = 	    "${datetime}"; 	// ${datetime} => the current time and date w/ the set formats
+    const string ILogger::LOG_FMT_LOGLVL = 	        "${llevel}"; 	// ${llevel} => the log level of the current message
+    const string ILogger::LOG_FMT_MSG = 	        "${lmsg}"; 	// ${lmsg} => the actual log message
+    const string ILogger::LOG_FMT_FUNC = 	        "${func}"; 	// ${func} => if the current function was set via param, output that
+    const string ILogger::LOG_FMT_LINE = 	        "${lineno}"; 	// ${lineno} => if the current line number was set via param, output that
+    const string ILogger::LOG_FMT_CLASS = 	        "${class}"; 	// ${class} => if the class name was set, output that
+    const string ILogger::LOG_FMT_EXCEPT = 	        "${except}"; 	// ${except} => if an exception was passed, output that
+    const string ILogger::LOG_FMT_APPNAME = 	    "${appname}"; 	// ${appname} => if the application's name was set, output that
+    const string ILogger::LOG_FMT_CUSTOM = 	        "${custom}"; 	// ${custom} => this allows for some custom flare to be added to log ILogger::outputs
+
+    const string ILogger::DEFAULT_LOG_FMT =         "[ ${date} ${time} ] [ ${llevel} ] ${lmsg}";
+    const string ILogger::EXCEPT_LOG_FMT =          "[ ${datetime} ] [ ${llevel} ] ${lmsg}: ${except}  ";
+    const string ILogger::VERBOSE_LOG_FMT =         "[ ${datetime} ] [ ${llevel} ] [ ${func}:${lineno} ] ${lmsg}";
+    const string ILogger::CLASS_LOG_FMT =           "[ ${datetime} ] [ ${llevel} ] [ ${class} ] ${lmsg}";
+    const string ILogger::VERBOSE_CLASS_LOG_FMT =   "[ ${datetime} ] [ ${llevel} ] [ ${class}#${func}:${lineno} ] ${lmsg}";
 
     // PROTECTED IMPLEMENTATION
 
