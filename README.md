@@ -86,16 +86,9 @@ In this case, all you'll have to do in your project, is expand this example code
             //      OVERRIDE ABSTRACT METHODS       //
             //    Implement these as you see fit.   //
             //////////////////////////////////////////
-            virtual void logMessage(LogLevel level, logMessage msg, lineNo line = -1, funcName function = "");
+            virtual void logMessage(LogLevel level, string msg); // Optional override; will always write to underlying buffer
 
-            virtual void debug(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
-            virtual void error(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
-            virtual void fatal(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
-            virtual void info(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
-            virtual void ok(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
-            virtual void trace(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
-            virtual void warning(logMessage msg, exception* except = nullptr, lineNo line = -1, funcName func = "");
-
+            virtual void flushBuffer(); // Mandatory override; flushBuffer is pure virtual.
     };
 ```
 
@@ -108,17 +101,58 @@ This means all you'll have to do, is implement the following code.
     #include <log.hpp>
 
     int main(int32_t argC, char* argV[]) {
-        auto fileLogger = LogFactory::buildFileLogger(/* max logging level */LogLevel::Trace, 
-                                                      /* filename */"my.log", 
-                                                      /* buffer size */4096/*B*/,
-                                                      /* flush after write */false);
-        auto consoleLogger = LogFactory::buildConsoleLogger(/* max logging level */LogLevel::Trace,
-                                                            /* output bad logs to stderr */true,
-                                                            /* buffer size */4096,
-                                                            /* flush after write */false);
-        auto streamLogger = LogFactory::buildStreamLogger(/* max logging level */LogLevel::Trace,
-                                                          /* output stream */myStream,
-                                                          /* buffer size */4096,
-                                                          /* flush after write */false);
+        using logpp::ConsoleLogger;
+        using logpp::formatString;
+
+        // Creating a new ConsoleLogger.
+        // Pointers are not required!
+        auto consoleLogger = new ConsoleLogger(
+            "myCustomLogger", /* give it a name */
+            LogLevel::Trace, /* show all the logs! */
+            true, /* redirect "bad" logs to stderr */
+            4096u, /* buffer 4096B before flushing */
+            false, /* don't flush buffer after each log. This is overridden by setting buffer size to 0u! */
+            // The next parameters are OPTIONAL
+            true, /* log to separate file */
+            "/var/log/my_cool_app/.log", /* full path to log file */
+            128 /* max log file size in MiB! (size * 1'048'576u) */
+        );
+
+        consoleLogger->debug("Setting up logger...");
+        // Now let's set some funky things
+        consoleLogger->setCurrentApplicationName("My Cool App");
+        consoleLogger->setCurrentCustomFlare("{{TEST OUTPUT}}");
+        consoleLogger->setCurrentLoggerFormat(formatString(
+            "[%s] [%s] [%s] %s",
+            ConsoleLogger::LOG_FMT_CUSTOM.c_str(), // add your custom flare
+            ConsoleLogger::LOG_FMT_DATETIME, // add the current date and time
+            ConsoleLogger::LOG_FMT_LOGLVL, // add the log level
+            ConsoleLogger::LOG_FMT_MSG // add the actual log message
+        ));
+
+        // Now your changes have been made
+        consoleLogger->info("Ready!");
+
+        using logpp::LOGLEVEL_MAXVALUE;
+        using logpp::LOGLEVEL_MINVALUE;
+        for (int i = (int)LOGLEVEL_MINVALUE; i != (int)LOGLEVEL_MAXVALUE; i++) {
+            // We're bypassing the shortcut methods, meaning we have to format the messages ourselves
+            // virtual string formatLogMessage(string& msg, LogLevel lvl, string func = "", int32_t line = -1, exception* except = nullptr)
+            auto msg = formatString("We're looping through all the log levels. Right now, we're at %s!", toString((LogLevel)i).c_str());
+            consoleLogger->logMessage((LogLevel)i, 
+                consoleLogger->formatLogMessage(
+                    msg,
+                    (LogLevel)i
+                )
+            );
+        }
+
+        delete consoleLogger;
+        return 0;
     }
 ```
+
+# Todos
+This section contains current todos.
+
+ - Implement StreamLogger class.

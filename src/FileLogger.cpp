@@ -41,7 +41,7 @@ namespace logpp {
     ILogger(logName, maxLogLevel, bufferSize, flushBufferAfterWrite) {
         _filename = filename;
         if (fileExists(filename)) {
-            FileLogger::maxFileSize (maxFileSize);
+            FileLogger::maxFileSize(maxFileSize);
         } else if (createFileIfNotExists) {
 			// Create file if required.
             createFile(filename);

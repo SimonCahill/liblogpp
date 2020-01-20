@@ -75,6 +75,9 @@ namespace logpp {
         Trace = 6
     };
 
+    const LogLevel LOGLEVEL_MAXVALUE = LogLevel::Trace;
+    const LogLevel LOGLEVEL_MINVALUE = LogLevel::Ok;
+
     using std::atoi;
     using std::string;
 

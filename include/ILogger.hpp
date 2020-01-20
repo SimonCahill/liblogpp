@@ -138,6 +138,19 @@ namespace logpp {
             virtual string getCurrentTime();
 
             /**
+             * @brief Formats an entire log message which may then be directly printed to any given (string) output.
+             *
+             * @param msg A reference to a string containing the log message. Also used as the output for the entire (formatted) message.
+             * @param lvl The log level for the given message. Used for formatting.
+             * @param func The function which called the logger. Used for formatting.
+             * @param line The line at which the logger was called. Used for formatting.
+             * @param except A pointer to an exception which should be logged.
+             *
+             * @return Returns the entire formatted message so it may be used in a function call.
+             */
+            virtual string formatLogMessage(string& msg, LogLevel lvl, string func = "", int32_t line = -1, exception* except = nullptr);
+
+            /**
              * @brief Flushes the internal buffer; abstract.
              */
             virtual void flushBuffer() = 0;
@@ -208,19 +221,6 @@ namespace logpp {
 
 	    protected:
 	        ILogger(string logName, LogLevel maxLevel, uint32_t bufferSize, bool flushBufferAfterWrite); ///!< Base constructor.
-
-            /**
-             * @brief Formats an entire log message which may then be directly printed to any given (string) output.
-             *
-             * @param msg A reference to a string containing the log message. Also used as the output for the entire (formatted) message.
-             * @param lvl The log level for the given message. Used for formatting.
-             * @param func The function which called the logger. Used for formatting.
-             * @param line The line at which the logger was called. Used for formatting.
-             * @param except A pointer to an exception which should be logged.
-             *
-             * @return Returns the entire formatted message so it may be used in a function call.
-             */
-            virtual string formatLogMessage(string& msg, LogLevel lvl, string func = "", int32_t line = -1, exception* except = nullptr);
 
             /**
              * @brief Gets a reference to the string stream used as a buffer.
