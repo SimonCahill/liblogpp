@@ -145,8 +145,7 @@ namespace logpp {
                     foreground = TextColour::YellowForeground;
                     break;
             }
-
-            stringReplaceAll(formattedMsg, toString(lvl), toString(lvl, foreground, background));
+            stringReplace(formattedMsg, toString(lvl), toString(lvl, foreground, background));
         }
 
         return formattedMsg;

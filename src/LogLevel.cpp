@@ -68,14 +68,14 @@ namespace logpp {
      */
     string toString(const LogLevel level) {
         switch (level) {
-            case LogLevel::Ok: return "Ok";
-            case LogLevel::Info: return "Info";
+            case LogLevel::Ok:      return " Okay  ";
+            case LogLevel::Info:    return " Info  ";
             case LogLevel::Warning: return "Warning";
-            case LogLevel::Error: return "Error";
-            case LogLevel::Fatal: return "Fatal";
-            case LogLevel::Debug: return "Debug";
-            case LogLevel::Trace: return "Trace";
-            default: return "Unknown";
+            case LogLevel::Error:   return " Error ";
+            case LogLevel::Fatal:   return " Fatal ";
+            case LogLevel::Debug:   return " Debug ";
+            case LogLevel::Trace:   return " Trace ";
+            default:                return "Unknown";
         }
     }
 
@@ -90,11 +90,14 @@ namespace logpp {
      */
     string toString(const LogLevel level, TextColour foreground, TextColour background) {
         using std::to_string;
+
         return formatString(
-            "\033[;%s;%sm%s\033[0m", toString(level).c_str(),
+            "\033[%s;%sm%s\033[0m",
+            background == TextColour::None ? "" : to_string((uint32_t)background).c_str(),
             foreground == TextColour::None ? "" : to_string((uint32_t)foreground).c_str(),
-            background == TextColour::None ? "" : to_string((uint32_t)background).c_str()
+            toString(level).c_str()
         );
     }
+
     
 } // namespace logpp
