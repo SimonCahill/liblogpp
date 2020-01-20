@@ -31,7 +31,7 @@ namespace logpp {
      * @param flushBufferAfterWrite Indicates whether to flush the buffer after each write to it.
      */
     ConsoleLogger::ConsoleLogger(string logName, LogLevel maxLogLevel, bool outputBadLogsToStderr, uint32_t bufferSize, bool flushBufferAfterWrite):
-    ILogger(logName, maxLogLevel, flushBufferAfterWrite, bufferSize), _fileLogger(nullptr), _logToFile(false) {
+    ILogger(logName, maxLogLevel, flushBufferAfterWrite, bufferSize), _fileLogger(nullptr), _logToFile(false), _colourLogLevels(true) {
         setOutputBadLogsToStderr(outputBadLogsToStderr);
     }
 
@@ -102,4 +102,53 @@ namespace logpp {
         ILogger::logMessage(level, msg);
     }
 
+    /**
+     * @brief Virtual method for formatting log messages as desired.
+     *
+     * This method provides a simple way of creating a custom flare for your log messages.
+     * This method may be overridden by classes inheriting this abstract class.
+     *
+     * @param msg A reference to the message to be logged. This string will be modified!
+     */
+    string ConsoleLogger::formatLogMessage(string& msg, LogLevel lvl, string func, int32_t line, exception* except) {
+        // logFormat local class variable containing formatting
+        if (getCurrentLoggerFormat().empty() || msg.empty()) {
+            return msg;
+        }
+
+        string formattedMsg = ILogger::formatLogMessage(msg, lvl, func, line, except);
+        if (_colourLogLevels) {
+            auto foreground = TextColour::None;
+            auto background = TextColour::None;
+
+            switch (lvl) {
+                case LogLevel::Debug:
+                    foreground = TextColour::CyanForeground;
+                    break;
+                case LogLevel::Error:
+                    foreground = TextColour::RedForeground;
+                    break;
+                case LogLevel::Fatal:
+                    foreground = TextColour::BlackForeground;
+                    background = TextColour::RedBackground;
+                    break;
+                case LogLevel::Info:
+                    foreground = TextColour::BlueForeground;
+                    break;
+                case LogLevel::Ok:
+                    foreground = TextColour::GreenForeground;
+                    break;
+                case LogLevel::Trace:
+                    foreground = TextColour::MagentaForeground;
+                    break;
+                case LogLevel::Warning:
+                    foreground = TextColour::YellowForeground;
+                    break;
+            }
+            stringReplace(formattedMsg, toString(lvl), toString(lvl, foreground, background));
+        }
+
+        return formattedMsg;
+    }
+    
 }

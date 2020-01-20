@@ -12,6 +12,7 @@
  ***************************/
 
  #include "LogExtensions.hpp"
+ #include "TextColour.hpp"
 
 /***************************
  *	    System Includes    *
@@ -91,6 +92,8 @@ namespace logpp {
     bool tryParseLogLevel(string level, LogLevel& out); ///!< Attempts to parse a string to a LogLevel.
 
     string toString(const LogLevel level); ///!< Converts a log level to its string representation
+
+    string toString(const LogLevel level, TextColour foreground, TextColour Background); ///!< Converts a log level to its string representation and adds colour to it.
 
     //////////////////////////////////
     //      OPERATOR OVERLOADS      //
