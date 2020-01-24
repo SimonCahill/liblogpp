@@ -9,9 +9,9 @@
 
 #include <iostream>
 
-#include <LogExtensions.hpp>
-#include <ILogger.hpp>
 #include <ConsoleLogger.hpp>
+#include <LogExtensions.hpp>
+#include <StreamLogger.hpp>
 
  namespace logpp {
 
