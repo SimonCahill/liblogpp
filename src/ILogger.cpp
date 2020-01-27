@@ -53,6 +53,8 @@ namespace logpp {
     string ILogger::LOG_FMT_APPNAME = 	"${appname}"; 	// ${appname} => if the application's name was set, output that
     string ILogger::LOG_FMT_CUSTOM = 	"${custom}"; 	// ${custom} => this allows for some custom flare to be added to log outputs
 
+    mutex* ILogger::_writeMutex = new mutex();
+
     // PROTECTED IMPLEMENTATION
 
     /**
@@ -68,7 +70,7 @@ namespace logpp {
         this->_logName = logName;
         this->_maxLoggingLevel = maxLevel;
         this->_dateFormatString = "%Y.%m.%d";
-        this->_timeFormatString = "%H:%M";
+        this->_timeFormatString = "%H:%M:%S";
         this->_dateTimeFormatString = formatString("%s %s", _dateFormatString.c_str(), _timeFormatString.c_str());
 
         // Buffer init
@@ -172,6 +174,7 @@ namespace logpp {
      * @param msg The (formatted) message to output.
      */
     void ILogger::logMessage(LogLevel level, string msg) {
+        getWriteMutex().lock();
         if (msg.empty()) return;
 
         using std::endl;
@@ -180,6 +183,7 @@ namespace logpp {
             _logBuffer << msg;
         } else _logBuffer << msg << endl;
 
+        getWriteMutex().unlock();
         // Now check if we need to flush
         if (isBadLog(level) || (getMaxBufferSize() == 0 || getBufferSize() >= getMaxBufferSize()) || flushBufferAfterWrite()) {
             flushBuffer();

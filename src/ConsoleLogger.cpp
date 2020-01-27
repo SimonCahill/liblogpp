@@ -61,6 +61,7 @@ namespace logpp {
         using std::cout;
         using std::endl;
 
+        getWriteMutex().lock();
         // TODO: Implement functionality where bad logs are output to cerr if desired.
         // This will require overriding logMessage()
         auto output = getLogBufferAsString();
@@ -72,6 +73,7 @@ namespace logpp {
         } else cout << output;
         
         clearStringStream(getLogBuffer());
+        getWriteMutex().unlock();
     }
 
     /**
@@ -92,13 +94,18 @@ namespace logpp {
         if (_logToFile && _fileLogger != nullptr)
             _fileLogger->logMessage(level, msg);
 
+        getWriteMutex().lock();
         if (outputBadLogsToStderr() && isBadLog(level)) {
             // Bypass log buffer and print directly to stderr.
             if (*msg.end() == '\n') {
                 cerr << msg;
             } else cerr << msg << endl;
+
+            getWriteMutex().unlock();
             return;
         }
+        getWriteMutex().unlock();
+
         ILogger::logMessage(level, msg);
     }
 

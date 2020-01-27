@@ -18,12 +18,14 @@
  ***************************/
 
 #include <exception>
+#include <mutex>
 #include <sstream>
 #include <string>
 
 namespace logpp {
 
     using std::exception;
+    using std::mutex;
 	using std::string;
     using std::stringstream;
 
@@ -236,7 +238,16 @@ namespace logpp {
 			 */
 			string getLogBufferAsString() { return getLogBuffer().str(); }
 
+            /**
+             * @brief Get the Write Mutex object
+             * 
+             * @return mutex& A reference to the mutex object.
+             */
+            mutex& getWriteMutex() { return *_writeMutex; }
+
 	    private:
+            static mutex* _writeMutex; ///!< Lock me before writing!
+
             string          _appName;
             string          _className;
             string          _customFlare;
