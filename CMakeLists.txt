@@ -55,6 +55,7 @@ add_compile_options(
 ###
 include_directories(
     include/ # This is the main include directory
+    include/memory # For overloaded new and delete operators for debugging memleaks
 )
 
 ###
@@ -71,4 +72,4 @@ endif()
 ###
 # Export header files
 ###
-target_include_directories(${PROJECT_NAME} PUBLIC include)
+target_include_directories(${PROJECT_NAME} PUBLIC include include/memory)

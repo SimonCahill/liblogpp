@@ -161,6 +161,14 @@ namespace logpp {
         stream.clear();
     }
 
+    /**
+     * @brief Gets the base name of a path (may be a file or directory).
+     * 
+     * @param path The path to evaluate.
+     * @return string The base name of the path.
+     */
+    inline string getBaseName(string const &path) { return path.substr(path.find_last_of("/\\") + 1); }
+
 }
 
 #endif // LIBLOGPP_EXTENSIONS_HPP
