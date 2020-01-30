@@ -63,4 +63,5 @@ void operator delete[](void*, const string, const int32_t);
 #define DEBUG_NEW new(__FILE__, __LINE__)
 //#define new DEBUG_NEW
 #define DEBUG_DELETE delete(__FILE__, __LINE__)
+//#define DEBUG_DELETE[] delete[](__FILE__, __LINE__)
 #endif // LOGPP_LEAKDETECTION_HPP
