@@ -172,6 +172,28 @@ namespace logpp {
             virtual void ok(string msg, exception* except = nullptr, int32_t line = -1, string func = ""); ///!< A shortcut method for logging ok messages. Abstract.
             virtual void trace(string msg, exception* except = nullptr, int32_t line = -1, string func = ""); ///!< A shortcut method for logging trace messages. Abstract.
             virtual void warning(string msg, exception* except = nullptr, int32_t line = -1, string func = ""); ///!< A shortcut method for logging warning messages. Abstract.
+            
+            template<typename... Args>
+            void debugFmt(const string fmt, Args... args) { debug(formatString(fmt, args...)); }
+
+            template<typename... Args>
+            void errorFmt(const string fmt, Args... args) { error(formatString(fmt, args...)); }
+
+            template<typename... Args>
+            void fatalFmt(const string fmt, Args... args) { fatal(formatString(fmt, args...)); }
+
+            template<typename... Args>
+            void infoFmt(const string fmt, Args... args) { info(formatString(fmt, args...)); }
+
+            template<typename... Args>
+            void okFmt(const string fmt, Args... args) { ok(formatString(fmt, args...)); }
+
+            template<typename... Args>
+            void traceFmt(const string fmt, Args... args) { trace(formatString(fmt, args...)); }
+
+            template<typename... Args>
+            void warningFmt(const string fmt, Args... args) { warning(formatString(fmt, args...)); }
+
 
             /**
              * @brief Sets the application name for this logger instance.
