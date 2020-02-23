@@ -174,9 +174,11 @@ namespace logpp {
      * @param msg The (formatted) message to output.
      */
     void ILogger::logMessage(LogLevel level, string msg) {
-        getWriteMutex().lock();
+        // Check if we're supposed to log anything or not
         if (msg.empty()) return;
+        else if (level >= _maxLoggingLevel) return;
 
+        getWriteMutex().lock();
         using std::endl;
         // _logBuffer << msg << endl; // Add message to buffer
         if (*msg.end() == '\n') {
