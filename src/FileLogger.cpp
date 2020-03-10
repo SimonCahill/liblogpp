@@ -105,7 +105,7 @@ namespace logpp {
      *
      */
     void FileLogger::flushBuffer () {
-        if (fileSize(_filename) > _maxFileSize * 1'048'576u) {
+        if (fileSize(_filename) > (_maxFileSize * 1'048'576u)) {
             if (_numLogs > 0) {
                 // delete last character
                 _filename.pop_back();

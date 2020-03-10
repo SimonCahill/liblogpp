@@ -35,6 +35,18 @@ namespace logpp {
         setOutputBadLogsToStderr(outputBadLogsToStderr);
     }
 
+    /**
+     * @brief Construct a new Console Logger:: Console Logger object
+     * 
+     * @param logName The name for this logger.
+     * @param maxLogLevel The maximum logging level to log.
+     * @param outputBadLogsToStderr Indicates whether to output bad logs to std error or not.
+     * @param bufferSize The maximum buffer size before flushing.
+     * @param flushBufferAfterWrite Indicates whether to flush the buffer after each write to it.
+     * @param logToFile Indicates whether to also log to a file or not.
+     * @param logPath The directory in which to create the log file(s).
+     * @param maxFileSize The maximum log file size in MiB.
+     */
     ConsoleLogger::ConsoleLogger(string logName, LogLevel maxLogLevel, bool outputBadLogsToStderr, uint32_t bufferSize, bool flushBufferAfterWrite,
                                  bool logToFile, string logPath, uint32_t maxFileSize): 
     ConsoleLogger(logName, maxLogLevel, outputBadLogsToStderr, flushBufferAfterWrite, bufferSize) {
