@@ -38,10 +38,9 @@ namespace logpp {
     */
     FileLogger::FileLogger(string logName, LogLevel maxLogLevel, string filename, uint32_t bufferSize, uint32_t maxFileSize,
                            bool flushBufferAfterWrite, bool createFileIfNotExists):
-    ILogger(logName, maxLogLevel, bufferSize, flushBufferAfterWrite) {
+    ILogger(logName, maxLogLevel, bufferSize, flushBufferAfterWrite), _maxFileSize(maxFileSize) {
         _filename = filename;
         if (fileExists(filename)) {
-            FileLogger::maxFileSize(maxFileSize);
         } else if (createFileIfNotExists) {
 			// Create file if required.
             createFile(filename);
@@ -54,7 +53,7 @@ namespace logpp {
     /**
      * @brief Destroy the fileLogger::fileLogger object
      */
-    FileLogger::~FileLogger () {}
+    FileLogger::~FileLogger() {}
 
 
     /**
@@ -62,9 +61,9 @@ namespace logpp {
      *
      * @param filename name of requested file
      *
-     * @return true if file exists, false else
+     * @return true if file exists, false else 
      */
-    bool FileLogger::fileExists (string filename) {
+    bool FileLogger::fileExists(string filename) {
         struct stat buffer;
         return (stat (filename.c_str (), &buffer) == 0);
     }
@@ -107,8 +106,8 @@ namespace logpp {
     void FileLogger::flushBuffer () {
         if (fileSize(_filename) > (_maxFileSize * 1'048'576u)) {
             if (_numLogs > 0) {
-                // delete last character
-                _filename.pop_back();
+                for (int i = 0; i < _numLogs; i++)
+                    _filename.pop_back();
             }
             // add/increment number at the end of _filename
             _filename.append(to_string(_numLogs++));
