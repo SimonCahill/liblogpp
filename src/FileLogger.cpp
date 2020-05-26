@@ -40,14 +40,8 @@ namespace logpp {
                            bool flushBufferAfterWrite, bool createFileIfNotExists):
     ILogger(logName, maxLogLevel, bufferSize, flushBufferAfterWrite), _maxFileSize(maxFileSize) {
         _filename = filename;
-        if (fileExists(filename)) {
-        } else if (createFileIfNotExists) {
-			// Create file if required.
+        if (createFileIfNotExists && !fileExists(filename))
             createFile(filename);
-		} else {
-            throw invalid_argument(formatString("File %s doesn't exist!", filename.c_str()));
-            // create file
-        }
     }
 
     /**
@@ -104,6 +98,9 @@ namespace logpp {
      *
      */
     void FileLogger::flushBuffer () {
+        if (!fileExists(_filename))
+            createFile(_filename);
+
         if (fileSize(_filename) > (_maxFileSize * 1'048'576u)) {
             if (_numLogs > 0) {
                 for (int i = 0; i < _numLogs; i++)
