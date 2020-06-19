@@ -84,6 +84,8 @@ namespace logpp {
      * @param msg The (formatted) message to output.
      */
     void FileLogger::logMessage(LogLevel level, string msg) {
+        if (level > getCurrentMaxLogLevel()) return;
+
         using std::endl;
         getLogBuffer() << msg << endl; // Add message to buffer
 

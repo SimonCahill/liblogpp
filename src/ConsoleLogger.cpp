@@ -103,6 +103,8 @@ namespace logpp {
         using std::cerr;
         using std::endl;
 
+        if (level > getCurrentMaxLogLevel()) return;
+
         if (_logToFile && _fileLogger != nullptr)
             _fileLogger->logMessage(level, msg);
 

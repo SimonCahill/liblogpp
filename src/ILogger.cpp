@@ -174,6 +174,8 @@ namespace logpp {
      * @param msg The (formatted) message to output.
      */
     void ILogger::logMessage(LogLevel level, string msg) {
+        if (level > this->_maxLoggingLevel) return;
+
         getWriteMutex().lock();
         if (msg.empty()) return;
 
