@@ -71,7 +71,7 @@ namespace logpp {
      */
     uint32_t FileLogger::fileSize(string filename) {
         struct stat buffer;
-        stat (filename.c_str (), &buffer);
+        stat (filename.c_str(), &buffer);
         return buffer.st_size;
     }
     
@@ -103,7 +103,7 @@ namespace logpp {
         if (!fileExists(_filename))
             createFile(_filename);
 
-        if (fileSize(_filename) > (_maxFileSize * 1'048'576u)) {
+        if (fileSize(_filename) > (_maxFileSize * 1048576u)) {
             if (_numLogs > 0) {
                 for (int i = 0; i < _numLogs; i++)
                     _filename.pop_back();
