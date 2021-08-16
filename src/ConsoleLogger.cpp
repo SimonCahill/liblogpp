@@ -7,8 +7,8 @@
 /****************************
  *	    Local Includes	    *
  ****************************/
- #include "ConsoleLogger.hpp"
- #include "LogExtensions.hpp"
+#include "ConsoleLogger.hpp"
+#include "LogExtensions.hpp"
 
 /***************************
  *	    System Includes    *
@@ -171,5 +171,5 @@ namespace logpp {
 
         return formattedMsg;
     }
-    
+
 }
