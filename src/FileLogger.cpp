@@ -15,17 +15,18 @@
  *	    System Includes    *
  ***************************/
 #include <exception>
-#include <iostream>
-#include <ostream>
+#include <fstream>
 #include <sys/stat.h>
 
 namespace logpp {
 
+    using std::endl;
 	using std::invalid_argument;
-    using std::iostream;
-    using std::ostream;
+    using std::ofstream;
     using std::to_string;
 
+    const static uint64_t ONE_MIB = 1'048'576u;
+    const uint32_t FileLogger::DEFAULT_MAX_LOG_FILES = 4;
 
     /**
     * @brief Construct a new fileLogger::fileLogger object
@@ -38,7 +39,7 @@ namespace logpp {
     */
     FileLogger::FileLogger(string logName, LogLevel maxLogLevel, string filename, uint32_t bufferSize, uint32_t maxFileSize,
                            bool flushBufferAfterWrite, bool createFileIfNotExists):
-    ILogger(logName, maxLogLevel, bufferSize, flushBufferAfterWrite) {
+    ILogger(logName, maxLogLevel, bufferSize, flushBufferAfterWrite), _maxFileCount(DEFAULT_MAX_LOG_FILES) {
         _filename = filename;
         if (fileExists(filename)) {
             FileLogger::maxFileSize(maxFileSize);
@@ -54,8 +55,7 @@ namespace logpp {
     /**
      * @brief Destroy the fileLogger::fileLogger object
      */
-    FileLogger::~FileLogger () {}
-
+    FileLogger::~FileLogger() {}
 
     /**
      * @brief checks if file exists
@@ -64,9 +64,9 @@ namespace logpp {
      *
      * @return true if file exists, false else
      */
-    bool FileLogger::fileExists (string filename) {
+    bool FileLogger::fileExists(string filename) {
         struct stat buffer;
-        return (stat (filename.c_str (), &buffer) == 0);
+        return (stat(filename.c_str (), &buffer) == 0);
     }
 
     /**
@@ -78,7 +78,7 @@ namespace logpp {
      */
     uint32_t FileLogger::fileSize(string filename) {
         struct stat buffer;
-        stat (filename.c_str (), &buffer);
+        stat(filename.c_str(), &buffer);
         return buffer.st_size;
     }
     
@@ -91,7 +91,6 @@ namespace logpp {
      * @param msg The (formatted) message to output.
      */
     void FileLogger::logMessage(LogLevel level, string msg) {
-        using std::endl;
         getLogBuffer() << msg << endl; // Add message to buffer
 
         // Now check if we need to flush
@@ -101,24 +100,16 @@ namespace logpp {
     }
 
     /**
-     * @brief writes buffer into given file. If file is greater than _maxFileSize (in MiB) in size a new file with incremented endnumber will be created
-     *
+     * @brief writes buffer into given file. If file is greater than _maxFileSize (in MiB) in size a new file with incremented end number will be created.
      */
-    void FileLogger::flushBuffer () {
-        if (fileSize(_filename) > _maxFileSize * 1'048'576u) {
-            if (_numLogs > 0) {
-                // delete last character
-                _filename.pop_back();
-            }
-            // add/increment number at the end of _filename
-            _filename.append(to_string(_numLogs++));
+    void FileLogger::flushBuffer() {
+        if (fileSize(formatString("%s%d", _filename, _numLogs)) >= _maxFileSize * ONE_MIB) {
+            _numLogs = (_numLogs > _maxFileCount ? 0 : _numLogs + 1);
         }
-        FILE* file = fopen(_filename.c_str(), "a");
 
-        if (file) {
-            fputs(getLogBufferAsString().c_str(), file);
-            fclose(file);
-            clearStringStream(getLogBuffer());
-        }
+        ofstream outStream(formatString("%s%d", _filename, _numLogs));
+        outStream << getLogBufferAsString() << endl;
+
+        clearStringStream(getLogBuffer());
     }
 }
