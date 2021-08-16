@@ -2,7 +2,7 @@
  * ConsoleLogger.hpp
  *
  * log++ - Intuitive logging library for C++ written by Simon Cahill.
- * Co-author: Pascal L�ttmann
+ * Co-author: Pascal Lüttmann
  */
 
 /****************************
@@ -39,17 +39,10 @@ namespace logpp {
     */
     FileLogger::FileLogger(string logName, LogLevel maxLogLevel, string filename, uint32_t bufferSize, uint32_t maxFileSize,
                            bool flushBufferAfterWrite, bool createFileIfNotExists):
-    ILogger(logName, maxLogLevel, bufferSize, flushBufferAfterWrite), _maxFileCount(DEFAULT_MAX_LOG_FILES) {
+    ILogger(logName, maxLogLevel, bufferSize, flushBufferAfterWrite), _maxFileCount(DEFAULT_MAX_LOG_FILES), _maxFileSize(maxFileSize) {
         _filename = filename;
-        if (fileExists(filename)) {
-            FileLogger::maxFileSize(maxFileSize);
-        } else if (createFileIfNotExists) {
-			// Create file if required.
+        if (createFileIfNotExists && !fileExists(filename))
             createFile(filename);
-		} else {
-            throw invalid_argument(formatString("File %s doesn't exist!", filename.c_str()));
-            // create file
-        }
     }
 
     /**
@@ -62,7 +55,7 @@ namespace logpp {
      *
      * @param filename name of requested file
      *
-     * @return true if file exists, false else
+     * @return true if file exists, false else 
      */
     bool FileLogger::fileExists(string filename) {
         struct stat buffer;
@@ -91,6 +84,8 @@ namespace logpp {
      * @param msg The (formatted) message to output.
      */
     void FileLogger::logMessage(LogLevel level, string msg) {
+        if (level > getCurrentMaxLogLevel()) return;
+
         getLogBuffer() << msg << endl; // Add message to buffer
 
         // Now check if we need to flush

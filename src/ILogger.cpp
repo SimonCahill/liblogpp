@@ -175,6 +175,10 @@ namespace logpp {
      */
     void ILogger::logMessage(LogLevel level, string msg) {
         // Check if we're supposed to log anything or not
+        if (level > this->_maxLoggingLevel) return;
+
+        getWriteMutex().lock();
+      
         if (msg.empty()) return;
         else if (level >= _maxLoggingLevel) return;
 
