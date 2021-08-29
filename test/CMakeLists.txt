@@ -53,13 +53,19 @@ include_directories(
 )
 
 ###
+# Get logpp
+###
+if (NOT TARGET logpp)
+    message("Adding logpp CMakeLists...")
+    # is this a standalone build?
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/.. ${CMAKE_CURRENT_BINARY_DIR}/liblogpp)
+endif()
+
+###
 # Add translation units
 ###
 file(GLOB_RECURSE FILES ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINKS src/*.cpp)
 
 add_executable(${PROJECT_NAME} ${FILES})
 
-add_library(logpp_static STATIC IMPORTED)
-set_target_properties(logpp_static PROPERTIES IMPORT_LOCATION ../build/liblogpp.a)
-
-target_link_libraries(${PROJECT_NAME} logpp_static)
+target_link_libraries(${PROJECT_NAME} logpp)
