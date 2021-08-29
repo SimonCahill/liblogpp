@@ -11,7 +11,7 @@
 
 #include <ConsoleLogger.hpp>
 #include <LogExtensions.hpp>
-#include <StreamLogger.hpp>
+// #include <StreamLogger.hpp>
 
  namespace logpp {
 
