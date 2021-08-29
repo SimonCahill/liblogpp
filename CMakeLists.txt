@@ -18,7 +18,7 @@
 ###
 # BASIC CMAKE STUFF
 ###
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.12)
 
 project(logpp LANGUAGES CXX VERSION 0.0.1)
 
@@ -61,7 +61,9 @@ include_directories(
 ###
 # Add translation units
 ###
-file(GLOB_RECURSE FILES ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINKS src/*.cpp)
+message("Globbing TUs...")
+file(GLOB_RECURSE FILES CONFIGURE_DEPENDS src/*.cpp)
+message("Finished globbing TUs...")
 
 if(${logpp_BUILD_STATIC})
     add_library(${PROJECT_NAME} STATIC ${FILES})
