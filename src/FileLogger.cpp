@@ -98,11 +98,11 @@ namespace logpp {
      * @brief writes buffer into given file. If file is greater than _maxFileSize (in MiB) in size a new file with incremented end number will be created.
      */
     void FileLogger::flushBuffer() {
-        if (fileSize(formatString("%s%d", _filename, _numLogs)) >= _maxFileSize * ONE_MIB) {
+        if (fileSize(formatString("%s%d", _filename.c_str(), _numLogs)) >= _maxFileSize * ONE_MIB) {
             _numLogs = (_numLogs > _maxFileCount ? 0 : _numLogs + 1);
         }
 
-        ofstream outStream(formatString("%s%d", _filename, _numLogs));
+        ofstream outStream(formatString("%s%d", _filename.c_str(), _numLogs));
         outStream << getLogBufferAsString() << endl;
 
         clearStringStream(getLogBuffer());
