@@ -20,6 +20,7 @@
 
 namespace logpp {
 
+    using std::cout;
     using std::endl;
 	using std::invalid_argument;
     using std::ofstream;
@@ -41,8 +42,6 @@ namespace logpp {
                            bool flushBufferAfterWrite, bool createFileIfNotExists):
     ILogger(logName, maxLogLevel, bufferSize, flushBufferAfterWrite), _maxFileCount(DEFAULT_MAX_LOG_FILES), _maxFileSize(maxFileSize) {
         _filename = filename;
-        if (createFileIfNotExists && !fileExists(filename))
-            createFile(filename);
     }
 
     /**
@@ -103,7 +102,7 @@ namespace logpp {
         }
 
         ofstream outStream(formatString("%s%d", _filename.c_str(), _numLogs));
-        outStream << getLogBufferAsString() << endl;
+        outStream << getLogBufferAsString();
 
         clearStringStream(getLogBuffer());
     }
