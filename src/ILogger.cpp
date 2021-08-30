@@ -182,7 +182,6 @@ namespace logpp {
         if (msg.empty()) return;
         else if (level >= _maxLoggingLevel) return;
 
-        getWriteMutex().lock();
         using std::endl;
         // _logBuffer << msg << endl; // Add message to buffer
         if (*msg.end() == '\n') {
