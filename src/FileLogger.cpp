@@ -20,6 +20,7 @@
 
 namespace logpp {
 
+    using std::cout;
     using std::endl;
 	using std::invalid_argument;
     using std::ios_base;
