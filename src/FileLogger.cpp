@@ -22,10 +22,11 @@ namespace logpp {
 
     using std::endl;
 	using std::invalid_argument;
+    using std::ios_base;
     using std::ofstream;
     using std::to_string;
 
-    const static uint64_t ONE_MIB = 1'048'576u;
+    const static uint64_t ONE_MIB = 1048576u;
     const uint32_t FileLogger::DEFAULT_MAX_LOG_FILES = 4;
 
     /**
@@ -37,13 +38,11 @@ namespace logpp {
     * @param bufferSize The maximum buffer size before flushing.
     * @param flushBufferAfterWrite Indicates whether to flush the buffer after each write to it.
     */
-    FileLogger::FileLogger(string logName, LogLevel maxLogLevel, string filename, uint32_t bufferSize, uint32_t maxFileSize,
-                           bool flushBufferAfterWrite, bool createFileIfNotExists):
-    ILogger(logName, maxLogLevel, bufferSize, flushBufferAfterWrite), _maxFileCount(DEFAULT_MAX_LOG_FILES), _maxFileSize(maxFileSize) {
-        _filename = filename;
-        if (createFileIfNotExists && !fileExists(filename))
-            createFile(filename);
-    }
+    FileLogger::FileLogger(string logName, LogLevel maxLogLevel, string filename, uint32_t bufferSize,
+                           uint32_t maxFileSize, bool flushBufferAfterWrite, bool createFileIfNotExists
+                          ): ILogger(logName, maxLogLevel, bufferSize, flushBufferAfterWrite),
+                          _maxFileCount(DEFAULT_MAX_LOG_FILES), _maxFileSize(maxFileSize),
+                          _filename(filename) {}
 
     /**
      * @brief Destroy the fileLogger::fileLogger object
@@ -98,11 +97,13 @@ namespace logpp {
      * @brief writes buffer into given file. If file is greater than _maxFileSize (in MiB) in size a new file with incremented end number will be created.
      */
     void FileLogger::flushBuffer() {
+        bool changedLogNo = false;
         if (fileSize(formatString("%s%d", _filename.c_str(), _numLogs)) >= _maxFileSize * ONE_MIB) {
             _numLogs = (_numLogs > _maxFileCount ? 0 : _numLogs + 1);
+            changedLogNo = true;
         }
 
-        ofstream outStream(formatString("%s%d", _filename.c_str(), _numLogs));
+        ofstream outStream(formatString("%s%d", _filename.c_str(), _numLogs), (changedLogNo ? ios_base::trunc : ios_base::app));
         outStream << getLogBufferAsString() << endl;
 
         clearStringStream(getLogBuffer());
