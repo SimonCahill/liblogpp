@@ -165,6 +165,18 @@ namespace logpp {
         return charBuffer;
     }
 
+    string ILogger::getOsNewLineChar() {
+        static string newLine = "";
+
+        if (newLine.empty()) {
+            std::ostringstream str;
+            str << std::endl;
+            newLine = str.str();
+        }
+
+        return newLine;
+    }
+
     /**
      * @brief Writes a message to the underlying log buffer and flushes the buffer accordingly.
      *

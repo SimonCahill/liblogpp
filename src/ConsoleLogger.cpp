@@ -80,9 +80,9 @@ namespace logpp {
 
         if (output.empty()) return;
         
-        if (*output.end() == '\n') {
+        if (*(output.end() - 1) == getOsNewLineChar()) {
             cout << output;
-        } else cout << output;
+        } else cout << output << endl;
         
         clearStringStream(getLogBuffer());
         getWriteMutex().unlock();
@@ -111,7 +111,7 @@ namespace logpp {
         getWriteMutex().lock();
         if (outputBadLogsToStderr() && isBadLog(level)) {
             // Bypass log buffer and print directly to stderr.
-            if (*msg.end() == '\n') {
+            if (*(msg.end() - 1) == getOsNewLineChar()) {
                 cerr << msg;
             } else cerr << msg << endl;
 

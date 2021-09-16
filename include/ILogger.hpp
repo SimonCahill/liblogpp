@@ -117,6 +117,11 @@ namespace logpp {
             virtual string getCurrentDateTime();
 
             /**
+             * @brief Gets the newline char required for the operating system currently in use.
+             */
+            virtual string getOsNewLineChar();
+
+            /**
              * @brief Gets the size of the string (in bytes) of the underlying buffer.
              *
              * @return The size (in bytes) of the underlying buffer.
