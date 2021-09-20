@@ -111,7 +111,7 @@ namespace logpp {
         getWriteMutex().lock();
         if (outputBadLogsToStderr() && isBadLog(level)) {
             // Bypass log buffer and print directly to stderr.
-            if (*msg.end() == '\n') {
+            if (msg.back() == '\n') {
                 cerr << msg;
             } else cerr << msg << endl;
 
