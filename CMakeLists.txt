@@ -20,7 +20,7 @@
 ###
 cmake_minimum_required(VERSION 3.12)
 
-project(logpp LANGUAGES CXX VERSION 0.0.1)
+project(logpp LANGUAGES CXX VERSION 0.1.0)
 
 ###
 # Set language version
