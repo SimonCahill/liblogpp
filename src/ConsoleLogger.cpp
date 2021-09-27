@@ -79,8 +79,10 @@ namespace logpp {
         auto output = getLogBufferAsString();
 
         if (output.empty()) return;
+
+        string newLine = "\n";
         
-        if (*(output.end() - 1) == getOsNewLineChar()) {
+        if (output.substr(output.size() - 1) == newLine) {
             cout << output;
         } else cout << output << endl;
         
@@ -108,10 +110,12 @@ namespace logpp {
         if (_logToFile && _fileLogger != nullptr)
             _fileLogger->logMessage(level, msg);
 
+        string newLine = "\n";
+
         getWriteMutex().lock();
         if (outputBadLogsToStderr() && isBadLog(level)) {
             // Bypass log buffer and print directly to stderr.
-            if (*(msg.end() - 1) == getOsNewLineChar()) {
+            if (msg.substr(msg.size() - 1) == newLine) {
                 cerr << msg;
             } else cerr << msg << endl;
 
