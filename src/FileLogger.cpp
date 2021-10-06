@@ -86,7 +86,11 @@ namespace logpp {
     void FileLogger::logMessage(LogLevel level, string msg) {
         if (level > getCurrentMaxLogLevel()) return;
 
-        getLogBuffer() << msg << endl; // Add message to buffer
+        getLogBuffer() << msg;
+        if (msg.back() != '\n' || msg.back() != '\r') {
+            // Add the missing line feed
+            getLogBuffer() << getOsNewLineChar();
+        }
 
         // Now check if we need to flush
         if (isBadLog(level) || (getMaxBufferSize() == 0 || getBufferSize() >= getMaxBufferSize()) || flushBufferAfterWrite()) {
