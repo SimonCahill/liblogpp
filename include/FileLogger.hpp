@@ -57,7 +57,7 @@ namespace logpp {
     struct ControlFileContents {
         uint32_t magicNumber;
         uint32_t currentWrittenLogFile;
-    } __packed__;
+    } __attribute__((packed));
 
 }
 
