@@ -30,7 +30,7 @@ namespace logpp {
      * @param bufferSize The maximum buffer size before flushing.
      * @param flushBufferAfterWrite Indicates whether to flush the buffer after each write to it.
      */
-    ConsoleLogger::ConsoleLogger(string logName, LogLevel maxLogLevel, bool outputBadLogsToStderr, uint32_t bufferSize, bool flushBufferAfterWrite):
+    ConsoleLogger::ConsoleLogger(const string& logName, const LogLevel maxLogLevel, const bool outputBadLogsToStderr, const uint32_t bufferSize, const bool flushBufferAfterWrite):
     ILogger(logName, maxLogLevel, flushBufferAfterWrite, bufferSize), _fileLogger(nullptr), _logToFile(false), _colourLogLevels(true) {
         setOutputBadLogsToStderr(outputBadLogsToStderr);
     }
@@ -47,8 +47,8 @@ namespace logpp {
      * @param logPath The directory in which to create the log file(s).
      * @param maxFileSize The maximum log file size in MiB.
      */
-    ConsoleLogger::ConsoleLogger(string logName, LogLevel maxLogLevel, bool outputBadLogsToStderr, uint32_t bufferSize, bool flushBufferAfterWrite,
-                                 bool logToFile, string logPath, uint32_t maxFileSize): 
+    ConsoleLogger::ConsoleLogger(const string& logName, const LogLevel maxLogLevel, const bool outputBadLogsToStderr, const uint32_t bufferSize, const bool flushBufferAfterWrite,
+                                 const bool logToFile, const string& logPath, const uint32_t maxFileSize): 
     ConsoleLogger(logName, maxLogLevel, outputBadLogsToStderr, flushBufferAfterWrite, bufferSize) {
         this->_logToFile = logToFile;
         if (_logToFile) {
@@ -101,7 +101,7 @@ namespace logpp {
      * @param level The log level of the message.
      * @param msg The message to be output.
      */
-    void ConsoleLogger::logMessage(LogLevel level, string msg) {
+    void ConsoleLogger::logMessage(const LogLevel level, const string& msg) {
         using std::cerr;
         using std::endl;
 
@@ -135,7 +135,7 @@ namespace logpp {
      *
      * @param msg A reference to the message to be logged. This string will be modified!
      */
-    string ConsoleLogger::formatLogMessage(string& msg, LogLevel lvl, string func, int32_t line, exception* except) {
+    string ConsoleLogger::formatLogMessage(const string& msg, const LogLevel lvl, const string& func, const int32_t line, const exception* except) {
         // logFormat local class variable containing formatting
         if (getCurrentLoggerFormat().empty() || msg.empty()) {
             return msg;

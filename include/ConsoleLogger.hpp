@@ -20,11 +20,11 @@ namespace logpp {
      */
     class ConsoleLogger: public ILogger {
         public:
-            ConsoleLogger(string logName, LogLevel maxLogLevel, bool outputBadLogsToStderr, 
-                          uint32_t bufferSize, bool flushBufferAfterWrite); ///!< Object constructor.
-            ConsoleLogger(string logName, LogLevel maxLogLevel, bool outputBadLogsToStderr,
-                          uint32_t bufferSize, bool flushBufferAfterWrite, bool logToFile, string logPath,
-                          uint32_t maxFileSize); ///!< Object constructor.
+            ConsoleLogger(const string& logName, const LogLevel maxLogLevel, const bool outputBadLogsToStderr, 
+                          const uint32_t bufferSize, const bool flushBufferAfterWrite); ///!< Object constructor.
+            ConsoleLogger(const string& logName, const LogLevel maxLogLevel, const bool outputBadLogsToStderr,
+                          const uint32_t bufferSize, const bool flushBufferAfterWrite, const bool logToFile, const string& logPath,
+                          const uint32_t maxFileSize); ///!< Object constructor.
             virtual ~ConsoleLogger(); ///!< Virtual destructor.
             
             /**
@@ -44,7 +44,7 @@ namespace logpp {
             bool outputDebugLogsToStderr() const { return this->_outputDebugToStderr; }
 
             virtual void flushBuffer() override; ///!< Flushes the underlying buffer.
-            virtual void logMessage(LogLevel level, string msg) override; ///!< Logs a message to the console.
+            virtual void logMessage(const LogLevel level, const string& msg) override; ///!< Logs a message to the console.
             
             /**
              * @brief Sets a value indicating whether to output bad logs to std err.
@@ -79,7 +79,7 @@ namespace logpp {
              *
              * @return Returns the entire formatted message so it may be used in a function call.
              */
-            virtual string formatLogMessage(string& msg, LogLevel lvl, string func = "", int32_t line = -1, exception* except = nullptr) override;
+            virtual string formatLogMessage(const string& msg, LogLevel lvl, const string& func = "", const int32_t line = -1, const exception* except = nullptr) override;
 
         private:
             bool _colourLogLevels;

@@ -56,8 +56,8 @@ namespace logpp {
     * @param bufferSize The maximum buffer size before flushing.
     * @param flushBufferAfterWrite Indicates whether to flush the buffer after each write to it.
     */
-    FileLogger::FileLogger(string logName, LogLevel maxLogLevel, string filename, uint32_t bufferSize,
-                           uint32_t maxFileSize, bool flushBufferAfterWrite, bool createFileIfNotExists
+    FileLogger::FileLogger(const string& logName, const LogLevel maxLogLevel, const string& filename, const uint32_t bufferSize,
+                           const uint32_t maxFileSize, const bool flushBufferAfterWrite, const bool createFileIfNotExists
                           ): ILogger(logName, maxLogLevel, bufferSize, flushBufferAfterWrite),
                           _maxFileCount(DEFAULT_MAX_LOG_FILES), _maxFileSize(maxFileSize),
                           _filename(filename) {}
@@ -74,7 +74,7 @@ namespace logpp {
      *
      * @return true if file exists, false else 
      */
-    bool FileLogger::fileExists(string filename) {
+    bool FileLogger::fileExists(const string& filename) {
         #ifdef logpp_USE_FSTAT
         struct stat buffer;
         return (stat(filename.c_str (), &buffer) == 0);
@@ -90,7 +90,7 @@ namespace logpp {
      *
      * @return size of file in bytes
      */
-    uint32_t FileLogger::fileSize(string filename) {
+    uint32_t FileLogger::fileSize(const string& filename) {
         #ifdef logpp_USE_FSTAT
         struct stat buffer;
         stat(filename.c_str(), &buffer);
@@ -108,7 +108,7 @@ namespace logpp {
      * @param level The level of the current log.
      * @param msg The (formatted) message to output.
      */
-    void FileLogger::logMessage(LogLevel level, string msg) {
+    void FileLogger::logMessage(const LogLevel level, const string& msg) {
         if (level > getCurrentMaxLogLevel()) return;
 
         getLogBuffer() << msg;
