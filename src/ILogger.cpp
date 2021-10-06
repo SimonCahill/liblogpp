@@ -41,17 +41,17 @@ namespace logpp {
     // This is especially handy if you're logging to one large file where different programs'
     // log messages are saved.
     //==========================================================================================
-    string ILogger::LOG_FMT_DATE = 	    "${date}"; 	// ${date} => the current date w/ the set date format
-    string ILogger::LOG_FMT_TIME = 	    "${time}"; 	// ${time} => the current time w/ the set time format
-    string ILogger::LOG_FMT_DATETIME = 	"${datetime}"; 	// ${datetime} => the current time and date w/ the set formats
-    string ILogger::LOG_FMT_LOGLVL = 	"${llevel}"; 	// ${llevel} => the log level of the current message
-    string ILogger::LOG_FMT_MSG = 	    "${lmsg}"; 	// ${lmsg} => the actual log message
-    string ILogger::LOG_FMT_FUNC = 	    "${func}"; 	// ${func} => if the current function was set via param, output that
-    string ILogger::LOG_FMT_LINE = 	    "${lineno}"; 	// ${lineno} => if the current line number was set via param, output that
-    string ILogger::LOG_FMT_CLASS = 	"${class}"; 	// ${class} => if the class name was set, output that
-    string ILogger::LOG_FMT_EXCEPT = 	"${except}"; 	// ${except} => if an exception was passed, output that
-    string ILogger::LOG_FMT_APPNAME = 	"${appname}"; 	// ${appname} => if the application's name was set, output that
-    string ILogger::LOG_FMT_CUSTOM = 	"${custom}"; 	// ${custom} => this allows for some custom flare to be added to log outputs
+    const string ILogger::LOG_FMT_DATE = 	    "${date}"; 	// ${date} => the current date w/ the set date format
+    const string ILogger::LOG_FMT_TIME = 	    "${time}"; 	// ${time} => the current time w/ the set time format
+    const string ILogger::LOG_FMT_DATETIME = 	"${datetime}"; 	// ${datetime} => the current time and date w/ the set formats
+    const string ILogger::LOG_FMT_LOGLVL = 	"${llevel}"; 	// ${llevel} => the log level of the current message
+    const string ILogger::LOG_FMT_MSG = 	    "${lmsg}"; 	// ${lmsg} => the actual log message
+    const string ILogger::LOG_FMT_FUNC = 	    "${func}"; 	// ${func} => if the current function was set via param, output that
+    const string ILogger::LOG_FMT_LINE = 	    "${lineno}"; 	// ${lineno} => if the current line number was set via param, output that
+    const string ILogger::LOG_FMT_CLASS = 	"${class}"; 	// ${class} => if the class name was set, output that
+    const string ILogger::LOG_FMT_EXCEPT = 	"${except}"; 	// ${except} => if an exception was passed, output that
+    const string ILogger::LOG_FMT_APPNAME = 	"${appname}"; 	// ${appname} => if the application's name was set, output that
+    const string ILogger::LOG_FMT_CUSTOM = 	"${custom}"; 	// ${custom} => this allows for some custom flare to be added to log outputs
 
     mutex* ILogger::_writeMutex = new mutex();
 
@@ -66,7 +66,7 @@ namespace logpp {
      * @param bufferSize The maximum size of the underlying buffer.
      * @param flushBufferAfterWrite A value indicating whether to flush the buffer after each write.
      */
-    ILogger::ILogger(string logName, LogLevel maxLevel, uint32_t bufferSize, bool flushBufferAfterWrite) {
+    ILogger::ILogger(const string& logName, LogLevel maxLevel, uint32_t bufferSize, bool flushBufferAfterWrite) {
         this->_logName = logName;
         this->_maxLoggingLevel = maxLevel;
         this->_dateFormatString = "%Y.%m.%d";
@@ -96,7 +96,7 @@ namespace logpp {
      *
      * @param msg A reference to the message to be logged. This string will be modified!
      */
-    string ILogger::formatLogMessage(string& msg, LogLevel lvl, string func, int32_t line, exception* except) {
+    string ILogger::formatLogMessage(const string& msg, LogLevel lvl, const string& func, const int32_t line, const exception* except) {
         // logFormat local class variable containing formatting
         if (_loggerFormat.empty() || msg.empty()) {
             return msg;
@@ -128,7 +128,7 @@ namespace logpp {
      *
      * @return The current date as defined by _dateFormatString
      */
-    string ILogger::getCurrentDate() {
+    string ILogger::getCurrentDate() const {
         auto timeStruct = getCurrentLocalTime();
         string charBuffer;
 
@@ -142,7 +142,7 @@ namespace logpp {
      *
      * @return The current date as defined by _dateTimeFormatString
      */
-    string ILogger::getCurrentDateTime() {
+    string ILogger::getCurrentDateTime() const {
         auto timeStruct = getCurrentLocalTime();
         char charBuffer[128];
         
@@ -156,7 +156,7 @@ namespace logpp {
      *
      * @return The current date as defined by _timeFormatString
      */
-    string ILogger::getCurrentTime() {
+    string ILogger::getCurrentTime() const {
         auto timeStruct = getCurrentLocalTime();
         string charBuffer;
 
@@ -165,7 +165,7 @@ namespace logpp {
         return charBuffer;
     }
 
-    string ILogger::getOsNewLineChar() {
+    string ILogger::getOsNewLineChar() const {
         static string newLine = "";
 
         if (newLine.empty()) {
@@ -185,7 +185,7 @@ namespace logpp {
      * @param level The level of the current log.
      * @param msg The (formatted) message to output.
      */
-    void ILogger::logMessage(LogLevel level, string msg) {
+    void ILogger::logMessage(LogLevel level, const string& msg) {
         // Check if we're supposed to log anything or not
         if (level > this->_maxLoggingLevel) return;
 
@@ -215,7 +215,7 @@ namespace logpp {
      * @param line (Optional) The line at which the logger was called.
      * @param func (Optional) The function/method in which the logger was called.
      */
-    void ILogger::debug(string msg, exception* except, int32_t line, string func) {
+    void ILogger::debug(const string& msg, const exception* except, const int32_t line, const string& func) {
         auto level = LogLevel::Debug;
         logMessage(level, formatLogMessage(msg, level, func, line, except));
     }
@@ -228,7 +228,7 @@ namespace logpp {
      * @param line (Optional) The line at which the logger was called.
      * @param func (Optional) The function/method in which the logger was called.
      */
-    void ILogger::error(string msg, exception* except, int32_t line, string func) {
+    void ILogger::error(const string& msg, const exception* except, const int32_t line, const string& func) {
         auto level = LogLevel::Error;
         logMessage(level, formatLogMessage(msg, level, func, line, except));
     }
@@ -241,7 +241,7 @@ namespace logpp {
      * @param line (Optional) The line at which the logger was called.
      * @param func (Optional) The function/method in which the logger was called.
      */
-    void ILogger::fatal(string msg, exception* except, int32_t line, string func) {
+    void ILogger::fatal(const string& msg, const exception* except, const int32_t line, const string& func) {
         auto level = LogLevel::Fatal;
         logMessage(level, formatLogMessage(msg, level, func, line, except));
     }
@@ -254,7 +254,7 @@ namespace logpp {
      * @param line (Optional) The line at which the logger was called.
      * @param func (Optional) The function/method in which the logger was called.
      */
-    void ILogger::info(string msg, exception* except, int32_t line, string func) {
+    void ILogger::info(const string& msg, const exception* except, const int32_t line, const string& func) {
         auto level = LogLevel::Info;
         logMessage(level, formatLogMessage(msg, level, func, line, except));
     }
@@ -267,7 +267,7 @@ namespace logpp {
      * @param line (Optional) The line at which the logger was called.
      * @param func (Optional) The function/method in which the logger was called.
      */
-    void ILogger::ok(string msg, exception* except, int32_t line, string func) {
+    void ILogger::ok(const string& msg, const exception* except, const int32_t line, const string& func) {
         auto level = LogLevel::Ok;
         logMessage(level, formatLogMessage(msg, level, func, line, except));
     }
@@ -280,7 +280,7 @@ namespace logpp {
      * @param line (Optional) The line at which the logger was called.
      * @param func (Optional) The function/method in which the logger was called.
      */
-    void ILogger::trace(string msg, exception* except, int32_t line, string func) {
+    void ILogger::trace(const string& msg, const exception* except, const int32_t line, const string& func) {
         auto level = LogLevel::Trace;
         logMessage(level, formatLogMessage(msg, level, func, line, except));
     }
@@ -293,7 +293,7 @@ namespace logpp {
      * @param line (Optional) The line at which the logger was called.
      * @param func (Optional) The function/method in which the logger was called.
      */
-    void ILogger::warning(string msg, exception* except, int32_t line, string func) {
+    void ILogger::warning(const string& msg, const exception* except, const int32_t line, const string& func) {
         auto level = LogLevel::Warning;
         logMessage(level, formatLogMessage(msg, level, func, line, except));
     }
