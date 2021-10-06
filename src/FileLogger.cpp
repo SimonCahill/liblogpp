@@ -14,6 +14,7 @@
 /***************************
  *	    System Includes    *
  ***************************/
+#include <cstring>
 #include <exception>
 #include <fstream>
 
@@ -31,6 +32,7 @@ namespace logpp {
 
     using std::cout;
     using std::endl;
+    using std::ifstream;
 	using std::invalid_argument;
     using std::ios_base;
     using std::ofstream;
@@ -45,6 +47,9 @@ namespace logpp {
     #endif
 
     const static uint64_t ONE_MIB = 1048576u;
+
+    const string FileLogger::LOGPP_CTRL_DIR = ".logpp";
+    const uint32_t FileLogger::CTRL_FILE_MAGIC = 0xf00d'beef;
     const uint32_t FileLogger::DEFAULT_MAX_LOG_FILES = 4;
 
     /**
@@ -60,7 +65,9 @@ namespace logpp {
                            const uint32_t maxFileSize, const bool flushBufferAfterWrite, const bool createFileIfNotExists
                           ): ILogger(logName, maxLogLevel, bufferSize, flushBufferAfterWrite),
                           _maxFileCount(DEFAULT_MAX_LOG_FILES), _maxFileSize(maxFileSize),
-                          _filename(filename) {}
+                          _filename(filename) {
+        initLogContinuation();
+    }
 
     /**
      * @brief Destroy the fileLogger::fileLogger object
@@ -81,6 +88,20 @@ namespace logpp {
         #else
         return fs::exists(filename);
         #endif
+    }
+
+    /**
+     * @brief Gets the path to the control file for the current logger.
+     * 
+     * @return string The path to the control file.
+     */
+    string FileLogger::getControlFilePath() const {
+        return formatString(
+            "%s/%s/%s.lcf",
+            logpp::getBaseName(_filename).c_str(),
+            FileLogger::LOGPP_CTRL_DIR.c_str(),
+            getCurrentLoggerName().c_str()
+        );
     }
 
     /**
@@ -131,11 +152,43 @@ namespace logpp {
         if (fileSize(formatString("%s%d", _filename.c_str(), _numLogs)) >= _maxFileSize * ONE_MIB) {
             _numLogs = (_numLogs > _maxFileCount ? 0 : _numLogs + 1);
             changedLogNo = true;
+            storeLatestLogFile();
         }
 
         ofstream outStream(formatString("%s%d", _filename.c_str(), _numLogs), (changedLogNo ? ios_base::trunc : ios_base::app));
         outStream << getLogBufferAsString() << endl;
 
         clearStringStream(getLogBuffer());
+    }
+
+    void FileLogger::initLogContinuation() {
+        ifstream inStream(getControlFilePath());
+
+        // uint8_t buffer[fileSize(getControlFilePath())] = { 0 };
+        const auto ctrlFileSize = fileSize(getControlFilePath());
+        uint8_t* buffer = new uint8_t[ctrlFileSize];
+        memset(buffer, 0, ctrlFileSize);
+        ControlFileContents contents = { 0 };
+
+        inStream >> buffer;
+        std::memcpy(&contents, buffer, sizeof(contents));
+
+        delete[] buffer;
+
+        if (contents.magicNumber == CTRL_FILE_MAGIC) {
+            _numLogs = contents.currentWrittenLogFile;
+        }
+    }
+
+    void FileLogger::storeLatestLogFile() {
+        ofstream outStream(getControlFilePath(), ios_base::trunc);
+        const ControlFileContents ctrlFile {
+            CTRL_FILE_MAGIC,
+            _numLogs
+        };
+
+        const char* fileContents = reinterpret_cast<const char*>(&ctrlFile);
+        outStream.write(fileContents, sizeof(ctrlFile));
+        outStream.flush();
     }
 }
