@@ -16,7 +16,16 @@
  ***************************/
 #include <exception>
 #include <fstream>
-#include <sys/stat.h>
+
+#ifndef logpp_USE_FSTAT
+    #if __cplusplus < 201703L
+        #include <experimental/filesystem>
+    #else
+        #include <filesystem>
+    #endif
+#else
+    #include <sys/stat.h>
+#endif
 
 namespace logpp {
 
@@ -26,6 +35,14 @@ namespace logpp {
     using std::ios_base;
     using std::ofstream;
     using std::to_string;
+
+    #ifndef logpp_USE_FSTAT
+        #if __cplusplus < 201703L
+            namespace fs = std::experimental::filesystem;
+        #else
+            namespace fs = std::filesystem;
+        #endif
+    #endif
 
     const static uint64_t ONE_MIB = 1048576u;
     const uint32_t FileLogger::DEFAULT_MAX_LOG_FILES = 4;
@@ -58,8 +75,12 @@ namespace logpp {
      * @return true if file exists, false else 
      */
     bool FileLogger::fileExists(string filename) {
+        #ifdef logpp_USE_FSTAT
         struct stat buffer;
         return (stat(filename.c_str (), &buffer) == 0);
+        #else
+        return fs::exists(filename);
+        #endif
     }
 
     /**
@@ -70,9 +91,13 @@ namespace logpp {
      * @return size of file in bytes
      */
     uint32_t FileLogger::fileSize(string filename) {
+        #ifdef logpp_USE_FSTAT
         struct stat buffer;
         stat(filename.c_str(), &buffer);
         return buffer.st_size;
+        #else
+        return static_cast<uint32_t>(fs::file_size(filename));
+        #endif
     }
     
     /**

@@ -35,7 +35,17 @@ set(CMAKE_CXX_EXTENSIONS ON)
 # This is the part where you get to decide whether you
 # want a static or shared library
 ###
-set(logpp_BUILD_STATIC True)
+if (NOT logpp_BUILD_SHARED)
+    set(logpp_BUILD_STATIC True)
+else()
+    set(logpp_BUILD_STATIC False)
+endif()
+
+if (logpp_USE_FSTAT STREQUAL "ON")
+    add_definitions(
+        -Dlogpp_USE_FSTAT
+    )
+endif()
 
 ###
 # Set compiler flags
