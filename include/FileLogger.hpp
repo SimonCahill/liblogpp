@@ -19,9 +19,12 @@ namespace logpp {
      * Unlike console logger no different configurations may be used to modify the behaviour of the logger, such as outputting bad logs to the standard error.
      */
     class FileLogger: public ILogger {
-        public:
-            static const uint32_t DEFAULT_MAX_LOG_FILES;
+        public: // +++ Public Static +++
+            static const string     LOGPP_CTRL_DIR; //!< .logpp/
+            static const uint32_t   CTRL_FILE_MAGIC; //!< Magic number for control files
+            static const uint32_t   DEFAULT_MAX_LOG_FILES;
 
+        public:
             FileLogger(const string& logName, const LogLevel maxLogLevel, const string& filename, const uint32_t bufferSize, 
                        const uint32_t maxFileSizeInMiB, const bool flushBufferAfterWrite, const bool createFile = false); ///!< object constructor
             virtual ~FileLogger(); ///!< virtual destructor
@@ -29,6 +32,11 @@ namespace logpp {
             virtual void logMessage(const LogLevel level, const string& msg) override;
 
             virtual FileLogger& setMaxFileCount(const uint32_t maxFileCount = DEFAULT_MAX_LOG_FILES) { _maxFileCount = maxFileCount; return *this; }
+
+        protected:
+            string getControlFilePath() const; //!< Gets the path to the control file for this logger
+            void initLogContinuation(); //!< Initialises the log continuation logic
+            void storeLatestLogFile(); //!< Stores the latest written log file to a control file in (...)/.logpp/<loggername>
 
         private:
             string _filename;
@@ -42,6 +50,14 @@ namespace logpp {
             uint32_t maxFileSizeInMiB() const { return _maxFileSize; } ///!< getter for _maxFileSize
             void maxFileSize(const uint32_t maxFileSize) { _maxFileSize = maxFileSize; } ///!< setter for _maxFileSize
     };
+
+    /**
+     * @brief Simple struct containing the internal structure of the control file
+     */
+    struct ControlFileContents {
+        uint32_t magicNumber;
+        uint32_t currentWrittenLogFile;
+    } __packed__;
 
 }
 
