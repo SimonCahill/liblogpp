@@ -149,19 +149,29 @@ namespace logpp {
      */
     void FileLogger::flushBuffer() {
         bool changedLogNo = false;
-        if (fileSize(formatString("%s%d", _filename.c_str(), _numLogs)) >= _maxFileSize * ONE_MIB) {
+
+        auto filename = formatString("%s%d", _filename.c_str(), _numLogs); 
+
+        if (fileExists(filename) && fileSize(filename) >= _maxFileSize * ONE_MIB) {
             _numLogs = (_numLogs > _maxFileCount ? 0 : _numLogs + 1);
             changedLogNo = true;
             storeLatestLogFile();
+            filename = formatString("%s%d", _filename.c_str(), _numLogs);
         }
 
-        ofstream outStream(formatString("%s%d", _filename.c_str(), _numLogs), (changedLogNo ? ios_base::trunc : ios_base::app));
+        ofstream outStream(filename, (changedLogNo ? ios_base::trunc : ios_base::app));
         outStream << getLogBufferAsString() << endl;
 
         clearStringStream(getLogBuffer());
     }
 
     void FileLogger::initLogContinuation() {
+        if (!fileExists(getControlFilePath())) {
+            _numLogs = 0;
+            storeLatestLogFile();
+            return;
+        }
+
         ifstream inStream(getControlFilePath());
 
         // uint8_t buffer[fileSize(getControlFilePath())] = { 0 };
