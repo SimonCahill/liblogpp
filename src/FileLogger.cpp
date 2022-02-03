@@ -156,7 +156,7 @@ namespace logpp {
         }
 
         ofstream outStream(formatString("%s%d", _filename.c_str(), _numLogs), (changedLogNo ? ios_base::trunc : ios_base::app));
-        outStream << getLogBufferAsString() << endl;
+        outStream << getLogBufferAsString();
 
         clearStringStream(getLogBuffer());
     }
