@@ -68,6 +68,20 @@ include_directories(
     include/memory # For overloaded new and delete operators for debugging memleaks
 )
 
+if (NOT logpp_USE_PRINTF)
+    message(WARNING "Will use legacy sprintf!")
+    ###
+    # Use legacy printf functions for string formatting
+    ###
+    add_definitions(
+        -Dlogpp_USE_PRINTF=1
+    )
+else()
+    if (NOT TARGET fmt)
+        add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/submodules/fmt)
+    endif()
+endif()
+
 ###
 # Add translation units
 ###
@@ -79,6 +93,14 @@ if(${logpp_BUILD_STATIC})
     add_library(${PROJECT_NAME} STATIC ${FILES})
 else()
     add_library(${PROJECT_NAME} SHARED ${FILES})
+endif()
+
+if (NOT logpp_USE_PRINTF AND TARGET fmt)
+    target_link_libraries(
+        ${PROJECT_NAME}
+
+        fmt
+    )
 endif()
 
 ###

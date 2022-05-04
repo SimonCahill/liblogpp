@@ -14,6 +14,9 @@
 #include <ctime>
 #include <iostream>
 
+#include <fmt/core.h>
+#include <fmt/chrono.h>
+
 //////////////////////////////////
 //	    Local Includes		    //
 //////////////////////////////////
@@ -41,17 +44,17 @@ namespace logpp {
     // This is especially handy if you're logging to one large file where different programs'
     // log messages are saved.
     //==========================================================================================
-    const string ILogger::LOG_FMT_DATE = 	    "${date}"; 	// ${date} => the current date w/ the set date format
-    const string ILogger::LOG_FMT_TIME = 	    "${time}"; 	// ${time} => the current time w/ the set time format
-    const string ILogger::LOG_FMT_DATETIME = 	"${datetime}"; 	// ${datetime} => the current time and date w/ the set formats
-    const string ILogger::LOG_FMT_LOGLVL = 	"${llevel}"; 	// ${llevel} => the log level of the current message
-    const string ILogger::LOG_FMT_MSG = 	    "${lmsg}"; 	// ${lmsg} => the actual log message
-    const string ILogger::LOG_FMT_FUNC = 	    "${func}"; 	// ${func} => if the current function was set via param, output that
-    const string ILogger::LOG_FMT_LINE = 	    "${lineno}"; 	// ${lineno} => if the current line number was set via param, output that
-    const string ILogger::LOG_FMT_CLASS = 	"${class}"; 	// ${class} => if the class name was set, output that
-    const string ILogger::LOG_FMT_EXCEPT = 	"${except}"; 	// ${except} => if an exception was passed, output that
-    const string ILogger::LOG_FMT_APPNAME = 	"${appname}"; 	// ${appname} => if the application's name was set, output that
-    const string ILogger::LOG_FMT_CUSTOM = 	"${custom}"; 	// ${custom} => this allows for some custom flare to be added to log outputs
+    const string ILogger::LOG_FMT_DATE  	=   "${date}"; 	    // ${date} => the current date w/ the set date format
+    const string ILogger::LOG_FMT_TIME  	=   "${time}"; 	    // ${time} => the current time w/ the set time format
+    const string ILogger::LOG_FMT_DATETIME  =   "${datetime}"; 	// ${datetime} => the current time and date w/ the set formats
+    const string ILogger::LOG_FMT_LOGLVL  	=   "${llevel}"; 	// ${llevel} => the log level of the current message
+    const string ILogger::LOG_FMT_MSG  	    =   "${lmsg}"; 	    // ${lmsg} => the actual log message
+    const string ILogger::LOG_FMT_FUNC  	=   "${func}"; 	    // ${func} => if the current function was set via param, output that
+    const string ILogger::LOG_FMT_LINE  	=   "${lineno}"; 	// ${lineno} => if the current line number was set via param, output that
+    const string ILogger::LOG_FMT_CLASS  	=   "${class}"; 	// ${class} => if the class name was set, output that
+    const string ILogger::LOG_FMT_EXCEPT  	=   "${except}"; 	// ${except} => if an exception was passed, output that
+    const string ILogger::LOG_FMT_APPNAME   =   "${appname}"; 	// ${appname} => if the application's name was set, output that
+    const string ILogger::LOG_FMT_CUSTOM  	=   "${custom}"; 	// ${custom} => this allows for some custom flare to be added to log outputs
 
     mutex* ILogger::_writeMutex = new mutex();
 
@@ -71,7 +74,11 @@ namespace logpp {
         this->_maxLoggingLevel = maxLevel;
         this->_dateFormatString = "%Y.%m.%d";
         this->_timeFormatString = "%H:%M:%S";
+        #ifdef logpp_USE_PRINTF
         this->_dateTimeFormatString = formatString("%s %s", _dateFormatString.c_str(), _timeFormatString.c_str());
+        #else
+        this->_dateTimeFormatString = fmt::format("{} {}", _dateFormatString, _timeFormatString);
+        #endif // logpp_USE_PRINTF
 
         // Buffer init
         this->_flushBufferAfterWrite = flushBufferAfterWrite;
@@ -105,18 +112,25 @@ namespace logpp {
         string formattedMsg = getCurrentLoggerFormat();
 
         // FIX: For some reason, this only works when passing the strings as a C string?!
-        stringReplaceAll(formattedMsg, LOG_FMT_DATE, getCurrentDate().c_str());
-        stringReplaceAll(formattedMsg, LOG_FMT_TIME, getCurrentTime().c_str());
-        stringReplaceAll(formattedMsg, LOG_FMT_DATETIME, getCurrentDateTime().c_str());
-        stringReplaceAll(formattedMsg, LOG_FMT_LOGLVL, toString(lvl).c_str());
-        stringReplaceAll(formattedMsg, LOG_FMT_MSG, msg.c_str());
-        stringReplaceAll(formattedMsg, LOG_FMT_CLASS, _className.c_str());
-        stringReplaceAll(formattedMsg, LOG_FMT_APPNAME, _appName.c_str());
-        stringReplaceAll(formattedMsg, LOG_FMT_CUSTOM, _customFlare.c_str());
+        stringReplaceAll(formattedMsg, LOG_FMT_DATE, getCurrentDate());
+        stringReplaceAll(formattedMsg, LOG_FMT_TIME, getCurrentTime());
+        stringReplaceAll(formattedMsg, LOG_FMT_DATETIME, getCurrentDateTime());
+        stringReplaceAll(formattedMsg, LOG_FMT_LOGLVL, toString(lvl));
+        stringReplaceAll(formattedMsg, LOG_FMT_MSG, msg);
 
-        stringReplaceAll(formattedMsg, LOG_FMT_FUNC, func.empty() ? "{{ no function name available }}" : func);
-        stringReplaceAll(formattedMsg, LOG_FMT_LINE, line == -1 ? "{{ no line no available }}" : to_string(line));
-        stringReplaceAll(formattedMsg, LOG_FMT_EXCEPT, except == nullptr ? "{{ no exception data available }}" : except->what());
+        if (!_className.empty()) {
+            stringReplaceAll(formattedMsg, LOG_FMT_CLASS, _className);
+        } if (!_appName.empty()) {
+            stringReplaceAll(formattedMsg, LOG_FMT_APPNAME, _appName);
+        } if (!_customFlare.empty()) {
+            stringReplaceAll(formattedMsg, LOG_FMT_CUSTOM, _customFlare);
+        } if (!func.empty()) {
+            stringReplaceAll(formattedMsg, LOG_FMT_FUNC, func);
+        } if (line >= 0) {
+            stringReplaceAll(formattedMsg, LOG_FMT_LINE, to_string(line));
+        } if (except != nullptr) {
+            stringReplaceAll(formattedMsg, LOG_FMT_EXCEPT, except->what());
+        }
 
         return formattedMsg;
     }
@@ -130,11 +144,14 @@ namespace logpp {
      */
     string ILogger::getCurrentDate() const {
         auto timeStruct = getCurrentLocalTime();
+
+        #ifdef logpp_USE_PRINTF
         string charBuffer;
-
         strftime(&charBuffer[0], 128, _dateFormatString.c_str(), &timeStruct);
-
         return charBuffer;
+        #else
+        return fmt::format("{:" + _dateFormatString + "}", timeStruct);
+        #endif // logpp_USE_PRINTF
     }
 
     /**
@@ -143,12 +160,16 @@ namespace logpp {
      * @return The current date as defined by _dateTimeFormatString
      */
     string ILogger::getCurrentDateTime() const {
-        auto timeStruct = getCurrentLocalTime();
-        char charBuffer[128];
+        tm timeStruct = getCurrentLocalTime();
         
+        #ifdef logpp_USE_PRINTF
+        char charBuffer[128];
         strftime(&charBuffer[0], 128, _dateTimeFormatString.c_str(), &timeStruct);
-
         return charBuffer;
+        #else
+        return fmt::format("{:" + _dateTimeFormatString + "}", timeStruct);
+        #endif // logpp_USE_PRINTF
+
     }
 
     /**
@@ -158,11 +179,14 @@ namespace logpp {
      */
     string ILogger::getCurrentTime() const {
         auto timeStruct = getCurrentLocalTime();
+
+        #ifdef logpp_USE_PRINTF
         string charBuffer;
-
         strftime(&charBuffer[0], 128, _timeFormatString.c_str(), &timeStruct);
-
         return charBuffer;
+        #else
+        return fmt::format("{:" + _timeFormatString + "}", timeStruct);
+        #endif // logpp_USE_PRINTF
     }
 
     string ILogger::getOsNewLineChar() const {

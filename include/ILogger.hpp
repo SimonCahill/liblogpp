@@ -22,6 +22,8 @@
 #include <sstream>
 #include <string>
 
+#include <fmt/core.h>
+
 namespace logpp {
 
     using std::exception;
@@ -178,6 +180,7 @@ namespace logpp {
             virtual void trace(const string& msg, const exception* except = nullptr, const int32_t line = -1, const string& func = ""); ///!< A shortcut method for logging trace messages. Abstract.
             virtual void warning(const string& msg, const exception* except = nullptr, const int32_t line = -1, const string& func = ""); ///!< A shortcut method for logging warning messages. Abstract.
             
+        #if defined(logpp_USE_PRINTF)
             template<typename... Args>
             void debugFmt(const string& fmt, Args... args) { debug(formatString(fmt, args...)); }
 
@@ -198,6 +201,28 @@ namespace logpp {
 
             template<typename... Args>
             void warningFmt(const string& fmt, Args... args) { warning(formatString(fmt, args...)); }
+        #else
+            template<typename... Args>
+            void debugFmt(const string& fmt, Args... args) { debug(fmt::format(fmt, args...)); }
+
+            template<typename... Args>
+            void errorFmt(const string& fmt, Args... args) { error(fmt::format(fmt, args...)); }
+
+            template<typename... Args>
+            void fatalFmt(const string& fmt, Args... args) { fatal(fmt::format(fmt, args...)); }
+
+            template<typename... Args>
+            void infoFmt(const string& fmt, Args... args) { info(fmt::format(fmt, args...)); }
+
+            template<typename... Args>
+            void okFmt(const string& fmt, Args... args) { ok(fmt::format(fmt, args...)); }
+
+            template<typename... Args>
+            void traceFmt(const string& fmt, Args... args) { trace(fmt::format(fmt, args...)); }
+
+            template<typename... Args>
+            void warningFmt(const string& fmt, Args... args) { warning(fmt::format(fmt, args...)); }
+        #endif // logpp_USE_PRINTF
 
 
             /**
