@@ -52,7 +52,7 @@ namespace logpp {
     ConsoleLogger(logName, maxLogLevel, outputBadLogsToStderr, flushBufferAfterWrite, bufferSize) {
         this->_logToFile = logToFile;
         if (_logToFile) {
-            _fileLogger = new FileLogger(logName, maxLogLevel, formatString("%s/%s.log", logPath.c_str(), logName.c_str()), bufferSize, maxFileSize, flushBufferAfterWrite, true);
+            _fileLogger = new FileLogger(logName, maxLogLevel, fmt::format("{}/{}.log", logPath, logName), bufferSize, maxFileSize, flushBufferAfterWrite, true);
         }
     }
 

@@ -38,7 +38,7 @@ namespace logpp {
      *
      * @return @code true @endcode if the haystack contains the given needle.
      */
-    inline bool stringContains(string& haystack, const string needle) {
+    inline bool stringContains(string& haystack, const string& needle) {
         return (haystack.find(needle) != string::npos);
     }
 
@@ -51,7 +51,7 @@ namespace logpp {
      *
      * @return @code true @endcode if the needle was replaced.
      */
-    inline bool stringReplace(string& haystack, const string needle, const string replacement) {
+    inline bool stringReplace(string& haystack, const string& needle, const string& replacement) {
         auto firstPosition = haystack.find(needle);
 
         // Return false if no needle was found
@@ -96,7 +96,7 @@ namespace logpp {
      * @param needle The needle to look for in the haystack.
      * @param replacement The replacement value for needle.
      */
-    inline void stringReplaceAll(string& haystack, const string needle, string replacement) {
+    inline void stringReplaceAll(string& haystack, const string& needle, const string& replacement) {
         if (haystack.empty() || needle.empty() || replacement.empty()) {
             return; // Simply return if either are empty
         }
@@ -104,6 +104,7 @@ namespace logpp {
         while (stringReplace(haystack, needle, replacement)) ;
     }
 
+#if defined(logpp_USE_PRINTF)
     /**
      * @brief Formats a std string object.
      * 
@@ -122,6 +123,8 @@ namespace logpp {
 
         return string(buffer.get(), buffer.get() + stringSize - 1); // std::string handles termination for us.
     }
+#else
+#endif // logpp_USE_PRINTF
 
     /**
      * @brief Get the Current Local Time object.
@@ -142,7 +145,7 @@ namespace logpp {
      * @return true 
      * @return false 
      */
-    inline bool createFile(const string filePath) {
+    inline bool createFile(const string& filePath) {
         using std::ofstream;
         ofstream fileToCreate(filePath);
         //fileToCreate << '\0';

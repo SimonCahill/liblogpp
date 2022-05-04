@@ -96,11 +96,11 @@ namespace logpp {
      * @return string The path to the control file.
      */
     string FileLogger::getControlFilePath() const {
-        return formatString(
-            "%s/%s/%s.lcf",
-            logpp::getBaseName(_filename).c_str(),
-            FileLogger::LOGPP_CTRL_DIR.c_str(),
-            getCurrentLoggerName().c_str()
+        return fmt::format(
+            "{}/{}/%s.lcf",
+            logpp::getBaseName(_filename),
+            FileLogger::LOGPP_CTRL_DIR,
+            getCurrentLoggerName()
         );
     }
 
@@ -149,19 +149,29 @@ namespace logpp {
      */
     void FileLogger::flushBuffer() {
         bool changedLogNo = false;
-        if (fileSize(formatString("%s%d", _filename.c_str(), _numLogs)) >= _maxFileSize * ONE_MIB) {
+
+        auto filename = fmt::format("{}{}", _filename, _numLogs); 
+
+        if (fileExists(filename) && fileSize(filename) >= _maxFileSize * ONE_MIB) {
             _numLogs = (_numLogs > _maxFileCount ? 0 : _numLogs + 1);
             changedLogNo = true;
             storeLatestLogFile();
+            filename = fmt::format("{}{}", _filename, _numLogs); 
         }
 
-        ofstream outStream(formatString("%s%d", _filename.c_str(), _numLogs), (changedLogNo ? ios_base::trunc : ios_base::app));
+        ofstream outStream(fmt::format("{}{}", _filename, _numLogs), (changedLogNo ? ios_base::trunc : ios_base::app));
         outStream << getLogBufferAsString();
 
         clearStringStream(getLogBuffer());
     }
 
     void FileLogger::initLogContinuation() {
+        if (!fileExists(getControlFilePath())) {
+            _numLogs = 0;
+            storeLatestLogFile();
+            return;
+        }
+
         ifstream inStream(getControlFilePath());
 
         // uint8_t buffer[fileSize(getControlFilePath())] = { 0 };
