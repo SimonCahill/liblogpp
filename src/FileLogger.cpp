@@ -96,11 +96,11 @@ namespace logpp {
      * @return string The path to the control file.
      */
     string FileLogger::getControlFilePath() const {
-        return formatString(
-            "%s/%s/%s.lcf",
-            logpp::getBaseName(_filename).c_str(),
-            FileLogger::LOGPP_CTRL_DIR.c_str(),
-            getCurrentLoggerName().c_str()
+        return fmt::format(
+            "{}/{}/%s.lcf",
+            logpp::getBaseName(_filename),
+            FileLogger::LOGPP_CTRL_DIR,
+            getCurrentLoggerName()
         );
     }
 
@@ -150,13 +150,13 @@ namespace logpp {
     void FileLogger::flushBuffer() {
         bool changedLogNo = false;
 
-        auto filename = formatString("%s%d", _filename.c_str(), _numLogs); 
+        auto filename = fmt::format("{}{}", _filename, _numLogs); 
 
         if (fileExists(filename) && fileSize(filename) >= _maxFileSize * ONE_MIB) {
             _numLogs = (_numLogs > _maxFileCount ? 0 : _numLogs + 1);
             changedLogNo = true;
             storeLatestLogFile();
-            filename = formatString("%s%d", _filename.c_str(), _numLogs);
+            filename = fmt::format("{}{}", _filename, _numLogs); 
         }
 
         ofstream outStream(filename, (changedLogNo ? ios_base::trunc : ios_base::app));
