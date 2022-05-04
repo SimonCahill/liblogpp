@@ -49,7 +49,7 @@ namespace logpp {
     const static uint64_t ONE_MIB = 1048576u;
 
     const string FileLogger::LOGPP_CTRL_DIR = ".logpp";
-    const uint32_t FileLogger::CTRL_FILE_MAGIC = 0xf00d'beef;
+    const uint32_t FileLogger::CTRL_FILE_MAGIC = 0xf00dbeef;
     const uint32_t FileLogger::DEFAULT_MAX_LOG_FILES = 4;
 
     /**
@@ -159,8 +159,8 @@ namespace logpp {
             filename = fmt::format("{}{}", _filename, _numLogs); 
         }
 
-        ofstream outStream(filename, (changedLogNo ? ios_base::trunc : ios_base::app));
-        outStream << getLogBufferAsString() << endl;
+        ofstream outStream(fmt::format("{}{}", _filename, _numLogs), (changedLogNo ? ios_base::trunc : ios_base::app));
+        outStream << getLogBufferAsString();
 
         clearStringStream(getLogBuffer());
     }
